@@ -14,6 +14,8 @@ const stringFromENVorThrow = (value: string, description: string) => {
 }
 
 export const config = {
-    twitterApiKey: stringFromENVorThrow(process.env.TWITTER_API_KEY, "twitter api key"),
-    twitterApiSecret: stringFromENVorThrow(process.env.TWITTER_API_SECRET, "twitter api secret"),
+    twitterApiKey: stringFromENVorThrow(process.env.TWITTER_API_KEY, "twitter access token"),
+    twitterApiSecret: stringFromENVorThrow(process.env.TWITTER_API_SECRET, "twitter access token secret"),
+    twitterOauthToken: stringFromENVorThrow(process.env.TWITTER_OAUTH_TOKEN, "twitter oauth token"),
+    twitterOauthSecret: stringFromENVorThrow(process.env.TWITTER_OAUTH_SECRET, "twitter oauth secret"),
 }
