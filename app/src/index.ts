@@ -1,22 +1,15 @@
-import { twitterClient } from './twitter';
+import { twitterClient, uploadTwitterImage } from './twitter';
 import axios from 'axios';
 import * as fs from 'fs';
 import delay = require('delay');
 
 const goImageNew = async () => {
-    const imageResp = await axios.get('https://api.artblocks.io/image/358', {responseType: 'arraybuffer'});
-    const imageData = imageResp.data as any;
-    const based = Buffer.from(imageData, 'binary').toString('base64');
-    
     try {
-        const uploadRes = await twitterClient.media.mediaUpload({
-            media_data: based
-        });
-        console.log({uploadRes});
+        const mediaId = await uploadTwitterImage('https://api.artblocks.io/image/358');
         
         const tweetRes = await twitterClient.tweets.statusesUpdate({
-            status: 'check it',
-            media_ids: uploadRes.media_id_string
+            status: 'check it, again',
+            media_ids: mediaId
         });
         console.log({tweetRes});
     } catch(e) {
