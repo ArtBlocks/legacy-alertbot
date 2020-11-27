@@ -18,4 +18,5 @@ export const config = {
     twitterApiSecret: stringFromENVorThrow(process.env.TWITTER_API_SECRET, "twitter access token secret"),
     twitterOauthToken: stringFromENVorThrow(process.env.TWITTER_OAUTH_TOKEN, "twitter oauth token"),
     twitterOauthSecret: stringFromENVorThrow(process.env.TWITTER_OAUTH_SECRET, "twitter oauth secret"),
+    infuraId: stringFromENVorThrow(process.env.INFURA_ID, "infura id")
 }

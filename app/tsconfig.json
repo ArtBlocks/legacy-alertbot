@@ -9,5 +9,5 @@
         "typeRoots": ["node_modules/@types"],
         "resolveJsonModule": true
     },
-    "include": ["./src/**/*"]
+    "include": ["./src/**/*", "./src/contracts/**/*"]
 }
