@@ -1,3 +1,4 @@
+import { discordAlertForArtBlock } from './discord';
 import { getArtblockInfo } from './artblocks_api';
 import { ArtBlockContract__factory } from './contracts/factories/ArtBlockContract__factory';
 import { twitterClient, uploadTwitterImage, tweetArtblock } from './twitter';
@@ -19,7 +20,15 @@ export const alertForBlocks = async (startingBlock: number, endingBlock: number)
         console.log('Alerting for', tokenId);
         const artBlock = await getArtblockInfo(tokenId);
         const tweetResp = await tweetArtblock(artBlock);
-        console.log('Tweet', `https://twitter.com/artblockmints/status/${tweetResp.id_str}`);
+        
+        try {
+            await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
+        } catch(e) {
+            console.error('Couldnt send to discord');
+            console.error(e);
+        }
+        
+        console.log('Tweet', tweetResp.tweetUrl);
         await delay(500);
     }
 }

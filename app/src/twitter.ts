@@ -43,8 +43,13 @@ export const tweetArtblock = async (artBlock: ArtBlocksResponse) => {
   const tweetText = `${artBlock.name} minted. \n\n https://artblocks.io/token/${artBlock.tokenID}`;
   console.log(`Tweeting ${tweetText}`)
   
-  return twitterClient.tweets.statusesUpdate({
+  const tweetRes = await twitterClient.tweets.statusesUpdate({
     status: tweetText,
     media_ids: mediaId
-  })
+  });
+  
+  return {
+    tweetRes,
+    tweetUrl: `https://twitter.com/artblockmints/status/${tweetRes.id_str}`
+  }
 }
