@@ -11,14 +11,15 @@ export const alertForBlocks = async (startingBlock: number, endingBlock: number)
         startingBlock, 
         endingBlock);
     const mintEvents = allEvents.filter(e => e.event === 'Mint');
-    console.log(mintEvents[1]);
     
     const mintedTokenIds: string[] = mintEvents.map(me => me.args['_tokenId'].toString());
+    console.log('Found mintedTokenIds', JSON.stringify(mintedTokenIds));
     for(let x=0; x<mintedTokenIds.length; x=x+1) {
         const tokenId = mintedTokenIds[x];
+        console.log('Alerting for', tokenId);
         const artBlock = await getArtblockInfo(tokenId);
         const tweetResp = await tweetArtblock(artBlock);
-        console.log({tweetResp});
+        console.log('Tweet', `https://twitter.com/artblockmints/status/${tweetResp.id_str}`);
         await delay(500);
     }
 }

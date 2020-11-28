@@ -3,4 +3,4 @@ services:
   web:
     volumes:
       - ./app/:/code
-      - /code/node_modules
+      # - /code/node_modules

@@ -33,6 +33,5 @@ export interface Trait {
 
 export const getArtblockInfo = async (tokenId: string) => {
     const res = await axios.get(`https://api.artblocks.io/token/${tokenId}`);
-    console.log(`data: ${res.data} for ${tokenId} https://api.artblocks.io/token/${tokenId}`)
     return res.data as ArtBlocksResponse;
 }

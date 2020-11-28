@@ -20,7 +20,6 @@ export const twitterClient = new TwitterClient({
       const uploadRes = await twitterClient.media.mediaUpload({
           media_data: based
       });
-      console.log({uploadRes});
       return uploadRes.media_id_string;
   } catch(e) {
       console.error(e);
@@ -34,11 +33,15 @@ export const tweetArtblock = async (artBlock: ArtBlocksResponse) => {
     return;
   }
   
-  console.log('uploading', artBlock.image);
+  console.log('Uploading', artBlock.image);
   const mediaId = await uploadTwitterImage(artBlock.image);
+  if (!mediaId) {
+    console.error('no media id returned, not tweeting');
+    return;
+  }
   
   const tweetText = `${artBlock.name} minted. \n\n https://artblocks.io/token/${artBlock.tokenID}`;
-  console.log(`tweeting ${tweetText}`)
+  console.log(`Tweeting ${tweetText}`)
   
   return twitterClient.tweets.statusesUpdate({
     status: tweetText,
