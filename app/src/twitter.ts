@@ -1,7 +1,7 @@
 import { config } from './config';
 import { TwitterClient } from 'twitter-api-client';
 import axios from 'axios';
-import { ArtBlocksResponse } from './artblocks_api';
+import { ArtBlockInfo, ArtBlocksResponse } from './artblocks_api';
 
 // console.log({config});
 export const twitterClient = new TwitterClient({
@@ -27,7 +27,7 @@ export const twitterClient = new TwitterClient({
   }
 }
 
-export const tweetArtblock = async (artBlock: ArtBlocksResponse) => {
+export const tweetArtblock = async (artBlock: ArtBlockInfo) => {
   if (!artBlock.image) {
     console.error('No artblock iage defined', JSON.stringify(artBlock));
     return;
@@ -40,7 +40,7 @@ export const tweetArtblock = async (artBlock: ArtBlocksResponse) => {
     return;
   }
   
-  const tweetText = `${artBlock.name} minted. \n\n https://artblocks.io/token/${artBlock.tokenID}`;
+  const tweetText = `${artBlock.name} minted${artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ''}. \n\n https://artblocks.io/token/${artBlock.tokenID}`;
   console.log(`Tweeting ${tweetText}`)
   
   const tweetRes = await twitterClient.tweets.statusesUpdate({

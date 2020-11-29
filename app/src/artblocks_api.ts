@@ -1,3 +1,4 @@
+import { artBlocksContract } from './ethereum';
 import axios from 'axios';
 
 export interface ArtBlocksResponse {
@@ -31,7 +32,43 @@ export interface Trait {
     value:      string;
 }
 
-export const getArtblockInfo = async (tokenId: string) => {
-    const res = await axios.get(`https://api.artblocks.io/token/${tokenId}`);
-    return res.data as ArtBlocksResponse;
+export interface ArtBlockInfo extends ArtBlocksResponse {
+    mintedBy?: string;
+}
+
+export const getArtblockInfo = async (tokenId: string): Promise<ArtBlockInfo> => {
+    const apiResponse = await axios.get(`https://api.artblocks.io/token/${tokenId}`);
+    const abResp = apiResponse.data as ArtBlocksResponse;
+    
+    try {
+        
+        const ownerAddress = await artBlocksContract.ownerOf(tokenId);
+        let mintedBy = ownerAddress.toLowerCase();
+        
+        try {
+            const openSeaResp = await axios.get(`https://api.opensea.io/account/${mintedBy}/`);
+            const openSeaRespData = openSeaResp.data as {
+                data: {
+                    user?: {
+                        username: string;
+                    }
+                }
+            }
+            if (openSeaRespData && openSeaRespData.data && openSeaRespData.data.user && openSeaRespData.data.user.username) {
+                mintedBy = openSeaRespData.data.user.username;
+            }
+        } catch(e) {
+            console.error(`error fetching opensea info`);
+            return;
+        }
+        
+        return {
+            ...abResp,
+            mintedBy
+        }
+    } catch(e) {
+        console.error(e);
+        return abResp;
+    }
+    
 }
