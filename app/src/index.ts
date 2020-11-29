@@ -32,13 +32,13 @@ const tick = async () => {
     isRunning = true;
     try {
         await alertForBlocks(lastBlockAlerted, endingBlock);
-        await setLastBlockAlerted(endingBlock);
         console.log('Tick successfully completed');
     } catch(e) {
         console.log('error');
         console.error(e);
         console.log('Tick errored out.');
     } finally {
+        await setLastBlockAlerted(endingBlock);
         isRunning = false;
     }
     
