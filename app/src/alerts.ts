@@ -30,7 +30,11 @@ export const alertForBlocks = async (
   const mintedTokenIds: string[] = mintEvents.map((me) =>
     me.args["_tokenId"].toString()
   );
-  console.log("Found mintedTokenIds", JSON.stringify(mintedTokenIds));
+  console.log(
+    contractVersion,
+    "Found mintedTokenIds",
+    JSON.stringify(mintedTokenIds)
+  );
   for (let x = 0; x < mintedTokenIds.length; x = x + 1) {
     const tokenId = mintedTokenIds[x];
     console.log("Alerting for", tokenId);
@@ -48,18 +52,22 @@ export const alertForBlocks = async (
       console.log("Tweet", tweetResp.tweetUrl);
     } catch (e) {
       console.error(e);
-      console.log("ERROR: cant tweet");
+      console.log(contractVersion, "ERROR: cant tweet");
     }
 
     if (tweetResp) {
       try {
         await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
+        console.info(contractVersion, "sent to discord");
       } catch (e) {
         console.error(e);
-        console.error("ERROR: Couldnt send to discord");
+        console.error(contractVersion, "ERROR: Couldnt send to discord");
       }
     } else {
-      console.error("ERROR: Not sending out discord b/c tweet didnt work");
+      console.error(
+        contractVersion,
+        "ERROR: Not sending out discord b/c tweet didnt work"
+      );
     }
 
     await delay(500);
