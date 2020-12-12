@@ -8,16 +8,17 @@ export const discordAlertForArtBlock = async (
 ) => {
   const discordText = `${artBlock.name} minted${
     artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ""
-  }. \n\n https://artblocks.io/token/${artBlock.tokenID} \n ${twitterUrl}`;
+  }. \n ${twitterUrl}`;
 
+  // https://artblocks.io/token/${artBlock.tokenID}
   const imageUrl = artBlock.image.replace(
     "api.artblocks.io",
     "testnetapi.artblocks.io"
   );
-  console.log("discord", { imageUrl });
+  console.log("discord url", { imageUrl });
 
   return axios.post(config.discordWebhookUrl, {
     content: discordText,
-    embeds: [{ image: { url: imageUrl } }],
+    // embeds: [{ image: { url: imageUrl } }],
   });
 };
