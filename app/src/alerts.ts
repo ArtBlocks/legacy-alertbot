@@ -10,6 +10,7 @@ import {
   v2ArtBlocksContract,
   ethersProvider,
 } from "./ethereum";
+import { StatusesUpdate } from "twitter-api-client";
 
 export const alertForBlocks = async (
   startingBlock: number,
@@ -34,16 +35,33 @@ export const alertForBlocks = async (
     const tokenId = mintedTokenIds[x];
     console.log("Alerting for", tokenId);
     const artBlock = await getArtblockInfo(tokenId);
-    const tweetResp = await tweetArtblock(artBlock);
+
+    let tweetResp:
+      | {
+          tweetRes: StatusesUpdate;
+          tweetUrl: string;
+        }
+      | undefined = undefined;
 
     try {
-      await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
+      tweetResp = await tweetArtblock(artBlock);
+      console.log("Tweet", tweetResp.tweetUrl);
     } catch (e) {
-      console.error("Couldnt send to discord");
       console.error(e);
+      console.log("ERROR: cant tweet");
     }
 
-    console.log("Tweet", tweetResp.tweetUrl);
+    if (tweetResp) {
+      try {
+        await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
+      } catch (e) {
+        console.error(e);
+        console.error("ERROR: Couldnt send to discord");
+      }
+    } else {
+      console.error("ERROR: Not sending out discord b/c tweet didnt work");
+    }
+
     await delay(500);
   }
 };
