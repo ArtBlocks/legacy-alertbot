@@ -14,6 +14,7 @@ export const discordAlertForArtBlock = async (
     "api.artblocks.io",
     "testnetapi.artblocks.io"
   );
+  console.log("discord", { imageUrl });
 
   return axios.post(config.discordWebhookUrl, {
     content: discordText,
