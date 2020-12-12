@@ -38,7 +38,7 @@ export const alertForBlocks = async (
   for (let x = 0; x < mintedTokenIds.length; x = x + 1) {
     const tokenId = mintedTokenIds[x];
     console.log("Alerting for", tokenId);
-    const artBlock = await getArtblockInfo(tokenId);
+    const artBlock = await getArtblockInfo(tokenId, contractVersion);
 
     let tweetResp:
       | {
