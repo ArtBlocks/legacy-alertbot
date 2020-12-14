@@ -11,10 +11,7 @@ export const discordAlertForArtBlock = async (
   }. \n ${twitterUrl}`;
 
   // https://artblocks.io/token/${artBlock.tokenID}
-  const imageUrl = artBlock.image.replace(
-    "api.artblocks.io",
-    "testnetapi.artblocks.io"
-  );
+  const imageUrl = artBlock.image;
   console.log("discord url", { imageUrl });
 
   return axios.post(config.discordWebhookUrl, {

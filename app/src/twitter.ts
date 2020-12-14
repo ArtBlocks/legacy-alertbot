@@ -35,10 +35,7 @@ export const tweetArtblock = async (artBlock: ArtBlockInfo) => {
     return;
   }
 
-  const imageUrl = artBlock.image.replace(
-    "api.artblocks.io",
-    "testnetapi.artblocks.io"
-  );
+  const imageUrl = artBlock.image;
 
   console.log("Uploading", imageUrl, "original", artBlock.image);
   const mediaId = await uploadTwitterImage(imageUrl);
