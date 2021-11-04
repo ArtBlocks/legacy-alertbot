@@ -1,3 +1,4 @@
 /app/node_modules
-/app/.env.local
+/app/.env.dev
+/app/.env.remote
 /app/tmp
