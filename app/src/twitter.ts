@@ -31,7 +31,7 @@ const getImageResp = async (imageUrl: string): Promise<Response> => {
       console.error(
         `Error while fetching image data. Try ${i + 1} of ${IMAGE_RETRIES}`
       );
-      sleep(IMAGE_RETRY_DELAY_MS);
+      await sleep(IMAGE_RETRY_DELAY_MS);
     }
   }
 };
