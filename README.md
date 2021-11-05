@@ -42,13 +42,14 @@ Ideally, this process could be ran as a simple single docker container and poten
 - Deployment environment variables should be defined in `/app/.env.remote` (see `/app/.env.example` for starting template; contact devs for values).
 
 5.  Ensure /app/.env.remote is up-to-date
-    >Note: `OVERRIDE_LAST_BLOCK_ALERTED_ON_INITIAL_TICK` should only be set (to ~current block) if initial deployment. It is used to initialize the redis database block to start from.
+    >Note: `OVERRIDE_LAST_BLOCK_ALERTED_ON_INITIALIZE` should only be set if initial deployment and you want to go back in time. It is used to initialize the redis database block to start from (default when not defined is `current_block - offset - 1`).
 
 6.  Use docker+aws integration to ship to remote
 
     ```shell
     docker compose -f docker-compose.base.yml -f docker-compose.remote.yml up
     ```
+    >Note: Sometimes RedisService fails to start and returns an error code: 32. Generally just re-running the command above fixes the issue. This generally only occurs the first time the service is created (initialized).
 
 7.  Don't forget to switch back to your normal docker context. e.g.:
 
