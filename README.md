@@ -64,6 +64,11 @@ Helpful notes:
 - `.env.dev` must be populated in the src folder. see `.env.example` for starting point.
 - If you want to run docker-compose deployments locally, images can be built on the fly (since not using ecs). Ensure docker context set to non-ecs (e.g. `docker context use default`), then simply run from the root folder:
   ```shell
-  docker compose -f docker-compose.dev.yml up -d --build
+  docker compose -f docker-compose.base.yml -f docker-compose.dev.yml up -d --build
   ```
   > Note: `--build` recommended to force rebuild of service:web image from Dockerfile
+
+- Shut down docker-compose deployments via the `down` command
+  ```shell
+  docker compose -f docker-compose.base.yml -f docker-compose.dev.yml down
+  ```
