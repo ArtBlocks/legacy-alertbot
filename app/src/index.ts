@@ -24,7 +24,6 @@ const tick = async () => {
     return;
   }
 
-  isRunning = true;
   console.log(`${new Date().toLocaleString()} Ticking...`);
   if (initialTick && overrideLastBlockAlertedOnInitialTick) {
     console.log(
@@ -41,10 +40,11 @@ const tick = async () => {
   const endingBlock = await getAppropriateEndingBlock();
   console.info(`Querying for `, { lastBlockAlerted, endingBlock });
 
+  isRunning = true;
   try {
     await alertForBlocks(lastBlockAlerted, endingBlock, "original");
     await alertForBlocks(lastBlockAlerted, endingBlock, "v2");
-    console.log("Tick successfully completed");
+    console.log("Tick successfully completed.");
   } catch (e) {
     console.log("error");
     console.error(e);

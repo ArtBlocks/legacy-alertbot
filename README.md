@@ -15,7 +15,7 @@ Ideally, this process could be ran as a simple single docker container and poten
 
 1.  Clone repository
 2.  Build web service docker image
-
+    > Note: If you experience permissions errors, ensure you docker is properly logged in by filling out and running the template script in `/scripts/docker_login_to_ecs.template.sh`.
     ```shell
     cd app
     # ensure docker context is set to a non-ecs context (such as default)
@@ -46,8 +46,6 @@ Ideally, this process could be ran as a simple single docker container and poten
     ```shell
     docker compose -f docker-compose.base.yml -f docker-compose.remote.yml up
     ```
-
-    > Note: If you experience permissions errors, ensure you docker is properly logged in by filling out and running the template script in `/scripts/docker_login_to_ecs.template.sh`.
 
 6.  Don't forget to switch back to your normal docker context. e.g.:
 
