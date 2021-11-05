@@ -48,8 +48,9 @@ export const alertForBlocks = async (
       | undefined = undefined;
 
     try {
-      tweetResp = await tweetArtblock(artBlock);
-      console.log("Tweet", tweetResp.tweetUrl);
+      console.log(`DEV: skipping tweet of image ${artBlock.image}`);
+      // TODO - re-enable this after testing // tweetResp = await tweetArtblock(artBlock);
+      // console.log("Tweet", tweetResp.tweetUrl);
     } catch (e) {
       console.error(e);
       console.log(contractVersion, "ERROR: cant tweet");

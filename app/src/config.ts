@@ -1,10 +1,3 @@
-const dotEnvPath = process.env.DOTENV_PATH;
-if (!dotEnvPath) {
-    throw new Error('No dotenv path required, please specify via DOTENV_PATH env var');
-}
-require('dotenv').config({ path: dotEnvPath });
-
-
 const stringFromENVorThrow = (value: string, description: string) => {
     if (value) {
         return value;

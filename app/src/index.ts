@@ -13,6 +13,10 @@ import { artBlocksContract, ethersProvider } from "./ethereum";
 import { alertForBlocks } from "./alerts";
 import { schedule } from "node-cron";
 
+const overrideLastBlockAlertedOnInitialTick =
+  parseInt(process.env.OVERRIDE_LAST_BLOCK_ALERTED_ON_INITIAL_TICK) ||
+  undefined;
+let initialTick = true;
 let isRunning = false;
 const tick = async () => {
   if (isRunning) {
@@ -20,7 +24,15 @@ const tick = async () => {
     return;
   }
 
+  isRunning = true;
   console.log(`${new Date().toLocaleString()} Ticking...`);
+  if (initialTick && overrideLastBlockAlertedOnInitialTick) {
+    console.log(
+      "override: setting initial tick last block alerted to: ",
+      overrideLastBlockAlertedOnInitialTick
+    );
+    await setLastBlockAlerted(overrideLastBlockAlertedOnInitialTick);
+  }
 
   const lastBlockAlerted = await getLastBlockAlerted();
   if (!lastBlockAlerted) {
@@ -29,7 +41,6 @@ const tick = async () => {
   const endingBlock = await getAppropriateEndingBlock();
   console.info(`Querying for `, { lastBlockAlerted, endingBlock });
 
-  isRunning = true;
   try {
     await alertForBlocks(lastBlockAlerted, endingBlock, "original");
     await alertForBlocks(lastBlockAlerted, endingBlock, "v2");
@@ -41,6 +52,7 @@ const tick = async () => {
   } finally {
     await setLastBlockAlerted(endingBlock);
     isRunning = false;
+    initialTick = false;
   }
 };
 
