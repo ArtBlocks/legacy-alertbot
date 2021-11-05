@@ -41,13 +41,16 @@ Ideally, this process could be ran as a simple single docker container and poten
 
 - Deployment environment variables should be defined in `/app/.env.remote` (see `/app/.env.example` for starting template; contact devs for values).
 
-5.  Use docker+aws integration to ship to remote
+5.  Ensure /app/.env.remote is up-to-date
+    >Note: `OVERRIDE_LAST_BLOCK_ALERTED_ON_INITIAL_TICK` should only be set (to ~current block) if initial deployment. It is used to initialize the redis database block to start from.
+
+6.  Use docker+aws integration to ship to remote
 
     ```shell
     docker compose -f docker-compose.base.yml -f docker-compose.remote.yml up
     ```
 
-6.  Don't forget to switch back to your normal docker context. e.g.:
+7.  Don't forget to switch back to your normal docker context. e.g.:
 
     ```shell
     docker context use default
