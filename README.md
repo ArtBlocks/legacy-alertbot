@@ -49,7 +49,7 @@ Ideally, this process could be ran as a simple single docker container and poten
     ```shell
     docker compose -f docker-compose.base.yml -f docker-compose.remote.yml up
     ```
-    >Note: Sometimes RedisService fails to start and returns an error code: 32. Generally just re-running the command above fixes the issue. This generally only occurs the first time the service is created (initialized).
+    >Note: Sometimes RedisService fails to start and returns an error code: 32. Generally recommend clearing out all images & volumes on your locker Docker Desktom, then re-running the command above. This generally only occurs the first time the service is created, not when updating an already-running project.
 
 7.  Don't forget to switch back to your normal docker context. e.g.:
 
