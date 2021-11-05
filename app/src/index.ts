@@ -2,6 +2,7 @@ import {
   getAppropriateEndingBlock,
   getLastBlockAlerted,
   setLastBlockAlerted,
+  initialize,
 } from "./storage";
 import { getArtblockInfo } from "./artblocks_api";
 import { ArtBlockContract__factory } from "./contracts/factories/ArtBlockContract__factory";
@@ -13,10 +14,6 @@ import { artBlocksContract, ethersProvider } from "./ethereum";
 import { alertForBlocks } from "./alerts";
 import { schedule } from "node-cron";
 
-const overrideLastBlockAlertedOnInitialTick =
-  parseInt(process.env.OVERRIDE_LAST_BLOCK_ALERTED_ON_INITIAL_TICK) ||
-  undefined;
-let initialTick = true;
 let isRunning = false;
 const tick = async () => {
   if (isRunning) {
@@ -25,13 +22,6 @@ const tick = async () => {
   }
 
   console.log(`${new Date().toLocaleString()} Ticking...`);
-  if (initialTick && overrideLastBlockAlertedOnInitialTick) {
-    console.log(
-      "override: setting initial tick last block alerted to: ",
-      overrideLastBlockAlertedOnInitialTick
-    );
-    await setLastBlockAlerted(overrideLastBlockAlertedOnInitialTick);
-  }
 
   const lastBlockAlerted = await getLastBlockAlerted();
   if (!lastBlockAlerted) {
@@ -52,9 +42,13 @@ const tick = async () => {
   } finally {
     await setLastBlockAlerted(endingBlock);
     isRunning = false;
-    initialTick = false;
   }
 };
 
-tick();
+const initialTick = async () => {
+  await initialize();
+  tick();
+};
+
+initialTick();
 schedule("*/2 * * * *", tick);
