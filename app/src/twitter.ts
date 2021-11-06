@@ -22,10 +22,9 @@ export interface Response {
 const getImageResp = async (imageUrl: string): Promise<Response> => {
   for (let i = 0; i < IMAGE_RETRIES; i++) {
     try {
-      const imageResp = await axios.get(imageUrl, {
+      return await axios.get(imageUrl, {
         responseType: "arraybuffer",
       });
-      return imageResp;
     } catch (e) {
       console.error(e);
       console.error(

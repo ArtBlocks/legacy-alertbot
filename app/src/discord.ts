@@ -7,6 +7,7 @@ export const discordAlertForArtBlock = async (
   postUrl: string,
   noEmbedUrl?: string
 ) => {
+  // noEmbedUrl embeds a link without a discord preview being generated
   const noEmbedString = noEmbedUrl ? `\n <${noEmbedUrl}>` : "";
   let discordText = `${artBlock.name} minted${
     artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ""

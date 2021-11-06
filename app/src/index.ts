@@ -45,10 +45,9 @@ const tick = async () => {
   }
 };
 
-const initialTick = async () => {
+const initializeCron = async () => {
   await initialize();
-  tick();
+  schedule("*/2 * * * *", tick);
 };
 
-initialTick();
-schedule("*/2 * * * *", tick);
+initializeCron();

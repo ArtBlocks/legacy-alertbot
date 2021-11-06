@@ -47,10 +47,7 @@ export interface Response {
 const getTokenResp = async (tokenId: string): Promise<Response> => {
   for (let i = 0; i < TOKEN_RETRIES; i++) {
     try {
-      const apiResponse = await axios.get(
-        `https://token.artblocks.io/${tokenId}`
-      );
-      return apiResponse;
+      return await axios.get(`https://token.artblocks.io/${tokenId}`);
     } catch (e) {
       console.error(e);
       console.error(
