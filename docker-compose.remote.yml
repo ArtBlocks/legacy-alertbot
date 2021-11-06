@@ -4,3 +4,12 @@ services:
     image: 568813240935.dkr.ecr.us-east-1.amazonaws.com/artblocks-alertbot-web:latest
     env_file:
       - ./app/.env.remote
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+  redis:
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1

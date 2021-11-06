@@ -3,8 +3,6 @@ services:
   web:
     depends_on:
       - redis
-    ports:
-      - "6379:6379"
 
   redis:
     image: redis:4.0.5-alpine
