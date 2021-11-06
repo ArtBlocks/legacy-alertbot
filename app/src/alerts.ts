@@ -58,16 +58,28 @@ export const alertForBlocks = async (
     if (tweetResp) {
       try {
         await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
-        console.info(contractVersion, "sent to discord");
+        console.info(contractVersion, "sent twitter post to discord");
       } catch (e) {
         console.error(e);
-        console.error(contractVersion, "ERROR: Couldnt send to discord");
+        console.error(
+          contractVersion,
+          "ERROR: Failed sending twitter post to discord"
+        );
       }
     } else {
-      console.error(
-        contractVersion,
-        "ERROR: Not sending out discord b/c tweet didnt work"
-      );
+      try {
+        console.log("Tweet didn't work, so link discord direct to site");
+        await discordAlertForArtBlock(
+          artBlock,
+          artBlock.image,
+          artBlock.external_url
+        );
+      } catch (e) {
+        console.error(
+          contractVersion,
+          "ERROR: Tweet didnt work, then discord post failed"
+        );
+      }
     }
 
     await delay(500);
