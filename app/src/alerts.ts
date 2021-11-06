@@ -17,12 +17,15 @@ export const alertForBlocks = async (
   endingBlock: number,
   contractVersion: "original" | "v2"
 ) => {
+  // edge case: starting block same as end block -> no advance, no action
+  if (startingBlock == endingBlock) return;
+
   const contractToUse =
     contractVersion === "original" ? artBlocksContract : v2ArtBlocksContract;
 
   const allEvents = await contractToUse.queryFilter(
     { address: artBlocksContract.address },
-    startingBlock,
+    startingBlock + 1, // add 1 to avoid oboe (already has been scanned)
     endingBlock
   );
   const mintEvents = allEvents.filter((e) => e.event === "Mint");
