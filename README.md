@@ -15,16 +15,24 @@ Ideally, this process could be ran as a simple single docker container and poten
 
 1.  Clone repository
 2.  Build web service docker image
-    > Note: If you experience permissions errors, ensure you docker is properly logged in by filling out and running the template script in `/scripts/docker_login_to_ecs.template.sh`.
     ```shell
     cd app
-    # ensure docker context is set to a non-ecs context (such as default)
+    ```
+    ensure docker context is set to a non-ecs context (such as default)
+    ```shell
     docker context use default
-    # build (using buildx if building on an M1 (ARM) device)
+    ```
+    build (using buildx if building on an M1 (ARM) device)
+    ```shell
     docker buildx build --platform=linux/amd64 -t artblocks-alertbot-web .
-    # after build completes, tag your image so you can push the image to the repository:
+    ```
+    after build completes, tag your image so you can push the image to the repository:
+    ```shell
     docker tag artblocks-alertbot-web:latest 568813240935.dkr.ecr.us-east-1.amazonaws.com/artblocks-alertbot-web:latest
-    # push the image to our AWS repository
+    ```
+    push the image to our AWS repository
+    > Note: If you experience permissions errors, ensure you docker is properly logged in by filling out and running the template script in `/scripts/docker_login_to_ecs.template.sh`.
+    ```shell
     docker push 568813240935.dkr.ecr.us-east-1.amazonaws.com/artblocks-alertbot-web:latest
     cd ../
     ```
@@ -49,7 +57,6 @@ Ideally, this process could be ran as a simple single docker container and poten
     ```shell
     docker compose -f docker-compose.base.yml -f docker-compose.remote.yml up
     ```
-    >Note: Sometimes RedisService fails to start and returns an error code: 32. Generally recommend clearing out all images & volumes on your locker Docker Desktom, then re-running the command above. This generally only occurs the first time the service is created, not when updating an already-running project.
 
 7.  Don't forget to switch back to your normal docker context. e.g.:
 
