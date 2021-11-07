@@ -4,8 +4,8 @@ import axios from "axios";
 import { ArtBlockInfo, ArtBlocksResponse } from "./artblocks_api";
 import { sleep } from "./utils";
 
-const IMAGE_RETRIES = 20;
-const IMAGE_RETRY_DELAY_MS = 18 * 1000;
+const IMAGE_RETRIES = 30;
+const IMAGE_RETRY_DELAY_MS = 25 * 1000;
 
 // console.log({config});
 export const twitterClient = new TwitterClient({
