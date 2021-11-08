@@ -17,12 +17,15 @@ export const alertForBlocks = async (
   endingBlock: number,
   contractVersion: "original" | "v2"
 ) => {
+  // edge case: starting block same as end block -> no advance, no action
+  if (startingBlock == endingBlock) return;
+
   const contractToUse =
     contractVersion === "original" ? artBlocksContract : v2ArtBlocksContract;
 
   const allEvents = await contractToUse.queryFilter(
     { address: artBlocksContract.address },
-    startingBlock,
+    startingBlock + 1, // add 1 to avoid oboe (already has been scanned)
     endingBlock
   );
   const mintEvents = allEvents.filter((e) => e.event === "Mint");
@@ -58,16 +61,28 @@ export const alertForBlocks = async (
     if (tweetResp) {
       try {
         await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
-        console.info(contractVersion, "sent to discord");
+        console.info(contractVersion, "sent twitter post to discord");
       } catch (e) {
         console.error(e);
-        console.error(contractVersion, "ERROR: Couldnt send to discord");
+        console.error(
+          contractVersion,
+          "ERROR: Failed sending twitter post to discord"
+        );
       }
     } else {
-      console.error(
-        contractVersion,
-        "ERROR: Not sending out discord b/c tweet didnt work"
-      );
+      try {
+        console.log("Tweet didn't work, so link discord direct to site");
+        await discordAlertForArtBlock(
+          artBlock,
+          artBlock.image,
+          artBlock.external_url
+        );
+      } catch (e) {
+        console.error(
+          contractVersion,
+          "ERROR: Tweet didnt work, then discord post failed"
+        );
+      }
     }
 
     await delay(500);

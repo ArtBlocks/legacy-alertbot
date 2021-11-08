@@ -2,6 +2,7 @@ import {
   getAppropriateEndingBlock,
   getLastBlockAlerted,
   setLastBlockAlerted,
+  initialize,
 } from "./storage";
 import { getArtblockInfo } from "./artblocks_api";
 import { ArtBlockContract__factory } from "./contracts/factories/ArtBlockContract__factory";
@@ -33,7 +34,7 @@ const tick = async () => {
   try {
     await alertForBlocks(lastBlockAlerted, endingBlock, "original");
     await alertForBlocks(lastBlockAlerted, endingBlock, "v2");
-    console.log("Tick successfully completed");
+    console.log("Tick successfully completed.");
   } catch (e) {
     console.log("error");
     console.error(e);
@@ -44,5 +45,9 @@ const tick = async () => {
   }
 };
 
-tick();
-schedule("*/2 * * * *", tick);
+const initializeCron = async () => {
+  await initialize();
+  schedule("*/2 * * * *", tick);
+};
+
+initializeCron();

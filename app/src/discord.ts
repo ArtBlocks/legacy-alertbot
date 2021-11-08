@@ -4,18 +4,16 @@ import { config } from "./config";
 
 export const discordAlertForArtBlock = async (
   artBlock: ArtBlockInfo,
-  twitterUrl: string
+  postUrl: string,
+  noEmbedUrl?: string
 ) => {
-  const discordText = `${artBlock.name} minted${
+  // noEmbedUrl embeds a link without a discord preview being generated
+  const noEmbedString = noEmbedUrl ? `\n <${noEmbedUrl}>` : "";
+  let discordText = `${artBlock.name} minted${
     artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ""
-  }. \n ${twitterUrl}`;
-
-  // https://artblocks.io/token/${artBlock.tokenID}
-  const imageUrl = artBlock.image;
-  console.log("discord url", { imageUrl });
+  }. ${noEmbedString} \n ${postUrl}`;
 
   return axios.post(config.discordWebhookUrl, {
     content: discordText,
-    // embeds: [{ image: { url: imageUrl } }],
   });
 };

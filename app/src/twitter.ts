@@ -2,6 +2,10 @@ import { config } from "./config";
 import { TwitterClient } from "twitter-api-client";
 import axios from "axios";
 import { ArtBlockInfo, ArtBlocksResponse } from "./artblocks_api";
+import { sleep } from "./utils";
+
+const IMAGE_RETRIES = 35;
+const IMAGE_RETRY_DELAY_MS = 25 * 1000;
 
 // console.log({config});
 export const twitterClient = new TwitterClient({
@@ -11,10 +15,30 @@ export const twitterClient = new TwitterClient({
   accessTokenSecret: config.twitterOauthSecret,
 });
 
+export interface Response {
+  data: any;
+}
+
+const getImageResp = async (imageUrl: string): Promise<Response> => {
+  for (let i = 0; i < IMAGE_RETRIES; i++) {
+    try {
+      return await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+    } catch (e) {
+      console.error(e);
+      console.error(
+        `Error while fetching image data. Try ${i + 1} of ${IMAGE_RETRIES}`
+      );
+      await sleep(IMAGE_RETRY_DELAY_MS);
+    }
+  }
+};
+
 export const uploadTwitterImage = async (
   imageUrl: string
 ): Promise<string | undefined> => {
-  const imageResp = await axios.get(imageUrl, { responseType: "arraybuffer" });
+  const imageResp = await getImageResp(imageUrl);
   const imageData = imageResp.data as any;
   const based = Buffer.from(imageData, "binary").toString("base64");
 
