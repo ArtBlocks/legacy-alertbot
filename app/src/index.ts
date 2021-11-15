@@ -6,7 +6,6 @@ import {
 } from "./storage";
 import { getArtblockInfo } from "./artblocks_api";
 import { ArtBlockContract__factory } from "./contracts/factories/ArtBlockContract__factory";
-import { twitterClient, uploadTwitterImage, tweetArtblock } from "./twitter";
 import axios from "axios";
 import * as fs from "fs";
 import delay = require("delay");

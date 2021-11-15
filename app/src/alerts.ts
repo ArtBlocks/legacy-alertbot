@@ -1,7 +1,7 @@
 import { discordAlertForArtBlock } from "./discord";
 import { getArtblockInfo } from "./artblocks_api";
 import { ArtBlockContract__factory } from "./contracts/factories/ArtBlockContract__factory";
-import { twitterClient, uploadTwitterImage, tweetArtblock } from "./twitter";
+import { tweetArtblock } from "./twitter";
 import axios from "axios";
 import * as fs from "fs";
 import delay = require("delay");
@@ -10,7 +10,7 @@ import {
   v2ArtBlocksContract,
   ethersProvider,
 } from "./ethereum";
-import { StatusesUpdate } from "twitter-api-client";
+import { TweetV1 } from "twitter-api-v2"
 
 export const alertForBlocks = async (
   startingBlock: number,
@@ -45,7 +45,7 @@ export const alertForBlocks = async (
 
     let tweetResp:
       | {
-          tweetRes: StatusesUpdate;
+          tweetRes: TweetV1;
           tweetUrl: string;
         }
       | undefined = undefined;
