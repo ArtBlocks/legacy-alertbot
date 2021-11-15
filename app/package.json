@@ -23,7 +23,7 @@
     "node-cron": "^2.0.3",
     "oauth": "^0.9.15",
     "redis": "^3.0.2",
-    "twitter-api-client": "^1.2.1",
+    "twitter-api-v2": "^1.6.5",
     "typechain": "^4.0.0"
   }
 }
