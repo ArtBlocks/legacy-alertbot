@@ -1,4 +1,4 @@
-# art-blocks-alert-bot
+# Art Blocks alertbot
 
 A twitter bot that:
 
