@@ -4,6 +4,8 @@ import { sleep } from "./utils";
 
 const TOKEN_RETRIES = 15;
 const TOKEN_RETRY_DELAY_MS = 12 * 1000;
+const IMAGE_RETRIES = 35;
+const IMAGE_RETRY_DELAY_MS = 25 * 1000;
 
 export interface ArtBlocksResponse {
   platform: string;
@@ -38,6 +40,7 @@ export interface Trait {
 
 export interface ArtBlockInfo extends ArtBlocksResponse {
   mintedBy?: string;
+  imgBinary: Buffer;
 }
 
 export interface Response {
@@ -57,6 +60,21 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
     }
   }
 };
+const getImageResp = async (imageUrl: string): Promise<Response> => {
+  for (let i = 0; i < IMAGE_RETRIES; i++) {
+    try {
+      return await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+    } catch (e) {
+      console.error(e);
+      console.error(
+        `Error while fetching image data. Try ${i + 1} of ${IMAGE_RETRIES}`
+      );
+      await sleep(IMAGE_RETRY_DELAY_MS);
+    }
+  }
+};
 
 export const getArtblockInfo = async (
   tokenId: string,
@@ -64,6 +82,8 @@ export const getArtblockInfo = async (
 ): Promise<ArtBlockInfo> => {
   const apiResponse = await getTokenResp(tokenId);
   const abResp = apiResponse.data as ArtBlocksResponse;
+  const imageResp = await getImageResp(abResp.image);
+  const imgBinary = Buffer.from(imageResp.data, "binary");
 
   try {
     const contractToUse =
@@ -97,10 +117,14 @@ export const getArtblockInfo = async (
 
     return {
       ...abResp,
+      imgBinary,
       mintedBy,
     };
   } catch (e) {
     console.error(e);
-    return abResp;
+    return {
+      ...abResp,
+      imgBinary,
+    };
   }
 };

@@ -10,7 +10,8 @@ import {
   v2ArtBlocksContract,
   ethersProvider,
 } from "./ethereum";
-import { TweetV1 } from "twitter-api-v2"
+import { TweetV1 } from "twitter-api-v2";
+import { alertQueue } from "alertQueue";
 
 export const alertForBlocks = async (
   startingBlock: number,
@@ -38,53 +39,20 @@ export const alertForBlocks = async (
     "Found mintedTokenIds",
     JSON.stringify(mintedTokenIds)
   );
-  for (let x = 0; x < mintedTokenIds.length; x = x + 1) {
-    const tokenId = mintedTokenIds[x];
-    console.log("Alerting for", tokenId);
+  enqueueTokensForMsg(mintedTokenIds, contractVersion);
+};
+
+const enqueueTokensForMsg = (
+  mintedTokenIds: string[],
+  contractVersion: "original" | "v2"
+) => {
+  mintedTokenIds.forEach(async (tokenId) => {
+    console.log("Fetching Complete data for", tokenId);
     const artBlock = await getArtblockInfo(tokenId, contractVersion);
-
-    let tweetResp:
-      | {
-          tweetRes: TweetV1;
-          tweetUrl: string;
-        }
-      | undefined = undefined;
-
-    try {
-      tweetResp = await tweetArtblock(artBlock);
-      console.log("Tweet", tweetResp.tweetUrl);
-    } catch (e) {
-      console.error(e);
-      console.log(contractVersion, "ERROR: cant tweet");
-    }
-
-    if (tweetResp) {
-      try {
-        await discordAlertForArtBlock(artBlock, tweetResp.tweetUrl);
-        console.info(contractVersion, "sent twitter post to discord");
-      } catch (e) {
-        console.error(e);
-        console.error(
-          contractVersion,
-          "ERROR: Failed sending twitter post to discord"
-        );
-      }
-    } else {
-      try {
-        console.log("Tweet didn't work, so link discord direct to site");
-        await discordAlertForArtBlock(
-          artBlock,
-          artBlock.image,
-          artBlock.external_url
-        );
-      } catch (e) {
-        console.error(
-          contractVersion,
-          "ERROR: Tweet didnt work, then discord post failed"
-        );
-      }
-    }
-
-    await delay(500);
-  }
+    console.log(`Fetched data for ${JSON.stringify(artBlock)}`);
+    alertQueue.add({
+      ...artBlock,
+      contractVersion,
+    });
+  });
 };
