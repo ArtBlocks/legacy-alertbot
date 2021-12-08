@@ -1,6 +1,11 @@
-import { getArtblockInfo } from "./artblocks_api";
+import {
+  ArtBlockInfo,
+  getArtblockInfo,
+  getMinterAddress,
+  getOpenseaInfo,
+} from "./api_data";
 import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
-import { alertQueue } from "alertQueue";
+import { processAlert } from "./process_alert";
 
 export const alertForBlocks = async (
   startingBlock: number,
@@ -28,20 +33,30 @@ export const alertForBlocks = async (
     "Found mintedTokenIds",
     JSON.stringify(mintedTokenIds)
   );
-  enqueueTokensForMsg(mintedTokenIds, contractVersion);
+  enqueueTokensForAlert(mintedTokenIds, contractVersion);
 };
 
-const enqueueTokensForMsg = (
+export const enqueueTokensForAlert = (
   mintedTokenIds: string[],
   contractVersion: "original" | "v2"
 ) => {
   mintedTokenIds.forEach(async (tokenId) => {
     console.log("Fetching Complete data for", tokenId);
-    const artBlock = await getArtblockInfo(tokenId, contractVersion);
-    console.log(`Fetched data for ${JSON.stringify(artBlock)}`);
-    alertQueue.add({
-      ...artBlock,
-      contractVersion,
-    });
+    const artBlock = await getArtblockInfo(tokenId);
+    const minterAddress = await getMinterAddress(tokenId, contractVersion);
+    const openseaName = await getOpenseaInfo(minterAddress);
+    let mintedBy;
+    if (openseaName) {
+      mintedBy = openseaName;
+    } else if (minterAddress) {
+      mintedBy = minterAddress;
+    }
+    processAlert(
+      {
+        ...artBlock,
+        mintedBy: openseaName,
+      },
+      contractVersion
+    );
   });
 };

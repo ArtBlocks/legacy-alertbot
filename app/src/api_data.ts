@@ -40,7 +40,7 @@ export interface Trait {
 
 export interface ArtBlockInfo extends ArtBlocksResponse {
   mintedBy?: string;
-  imgBinary: Buffer;
+  imgBinary?: Buffer;
 }
 
 export interface Response {
@@ -76,55 +76,46 @@ const getImageResp = async (imageUrl: string): Promise<Response> => {
   }
 };
 
-export const getArtblockInfo = async (
+export const getMinterAddress = async (
   tokenId: string,
   contractVersion: "original" | "v2"
+) => {
+  const contractToUse =
+    contractVersion === "original" ? artBlocksContract : v2ArtBlocksContract;
+  const ownerAddress = await contractToUse.ownerOf(tokenId);
+  return ownerAddress.toLowerCase();
+};
+
+export const getOpenseaInfo = async (account: string): Promise<string> => {
+  const openSeaResp = await axios.get(
+    `https://api.opensea.io/account/${account}/`
+  );
+  const openSeaRespData = openSeaResp.data as {
+    data: {
+      user?: {
+        username: string;
+      };
+    };
+  };
+  if (
+    openSeaRespData &&
+    openSeaRespData.data &&
+    openSeaRespData.data.user &&
+    openSeaRespData.data.user.username
+  ) {
+    return openSeaRespData.data.user.username;
+  }
+};
+
+export const getArtblockInfo = async (
+  tokenId: string
 ): Promise<ArtBlockInfo> => {
   const apiResponse = await getTokenResp(tokenId);
   const abResp = apiResponse.data as ArtBlocksResponse;
   const imageResp = await getImageResp(abResp.image);
   const imgBinary = Buffer.from(imageResp.data, "binary");
-
-  try {
-    const contractToUse =
-      contractVersion === "original" ? artBlocksContract : v2ArtBlocksContract;
-    const ownerAddress = await contractToUse.ownerOf(tokenId);
-    let mintedBy = ownerAddress.toLowerCase();
-
-    try {
-      const openSeaResp = await axios.get(
-        `https://api.opensea.io/account/${mintedBy}/`
-      );
-      const openSeaRespData = openSeaResp.data as {
-        data: {
-          user?: {
-            username: string;
-          };
-        };
-      };
-      if (
-        openSeaRespData &&
-        openSeaRespData.data &&
-        openSeaRespData.data.user &&
-        openSeaRespData.data.user.username
-      ) {
-        mintedBy = openSeaRespData.data.user.username;
-      }
-    } catch (e) {
-      console.error(`error fetching opensea info`);
-      return;
-    }
-
-    return {
-      ...abResp,
-      imgBinary,
-      mintedBy,
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      ...abResp,
-      imgBinary,
-    };
-  }
+  return {
+    ...abResp,
+    imgBinary,
+  };
 };

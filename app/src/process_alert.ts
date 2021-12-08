@@ -1,14 +1,12 @@
-const Queue = require("bull");
-import { ArtBlockInfo } from "artblocks_api";
+import { ArtBlockInfo } from "api_data";
 import { TweetV1 } from "twitter-api-v2";
 import { discordAlertForArtBlock } from "./discord";
 import { tweetArtblock } from "./twitter";
 
-export const alertQueue = new Queue("alerts");
-
-alertQueue.process(async function (job, done) {
-  const artBlock: ArtBlockInfo = job.data;
-  const contractVersion = job.data.contractVersion;
+export const processAlert = async (
+  artBlock: ArtBlockInfo,
+  contractVersion: string
+) => {
   let tweetResp:
     | {
         tweetRes: TweetV1;
@@ -29,5 +27,4 @@ alertQueue.process(async function (job, done) {
   } catch (e) {
     console.error(contractVersion, "ERROR: Discord post failed");
   }
-  done();
-});
+};

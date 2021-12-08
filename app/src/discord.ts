@@ -1,4 +1,4 @@
-import { ArtBlockInfo } from "./artblocks_api";
+import { ArtBlockInfo } from "./api_data";
 import axios from "axios";
 import { config } from "./config";
 
