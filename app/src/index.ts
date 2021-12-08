@@ -4,12 +4,6 @@ import {
   setLastBlockAlerted,
   initialize,
 } from "./storage";
-import { getArtblockInfo } from "./artblocks_api";
-import { ArtBlockContract__factory } from "./contracts/factories/ArtBlockContract__factory";
-import axios from "axios";
-import * as fs from "fs";
-import delay = require("delay");
-import { artBlocksContract, ethersProvider } from "./ethereum";
 import { alertForBlocks } from "./alerts";
 import { schedule } from "node-cron";
 

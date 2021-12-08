@@ -1,6 +1,6 @@
 import { config } from "./config";
 import { TwitterApi } from "twitter-api-v2";
-import { ArtBlockInfo, ArtBlocksResponse } from "./artblocks_api";
+import { ArtBlockInfo } from "./artblocks_api";
 
 const TWITTER_TIMEOUT_MS = 14 * 1000;
 

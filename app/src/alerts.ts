@@ -1,16 +1,5 @@
-import { discordAlertForArtBlock } from "./discord";
 import { getArtblockInfo } from "./artblocks_api";
-import { ArtBlockContract__factory } from "./contracts/factories/ArtBlockContract__factory";
-import { tweetArtblock } from "./twitter";
-import axios from "axios";
-import * as fs from "fs";
-import delay = require("delay");
-import {
-  artBlocksContract,
-  v2ArtBlocksContract,
-  ethersProvider,
-} from "./ethereum";
-import { TweetV1 } from "twitter-api-v2";
+import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
 import { alertQueue } from "alertQueue";
 
 export const alertForBlocks = async (

@@ -1,19 +1,19 @@
-import { ArtBlockInfo, ArtBlocksResponse } from "./artblocks_api";
+import { ArtBlockInfo } from "./artblocks_api";
 import axios from "axios";
 import { config } from "./config";
 
-export const discordAlertForArtBlock = async (
-  artBlock: ArtBlockInfo,
-  postUrl: string,
-  noEmbedUrl?: string
-) => {
-  // noEmbedUrl embeds a link without a discord preview being generated
-  const noEmbedString = noEmbedUrl ? `\n <${noEmbedUrl}>` : "";
-  let discordText = `${artBlock.name} minted${
-    artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ""
-  }. ${noEmbedString} \n ${postUrl}`;
+export const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
+  const title = artBlock.name;
+  const description = `[${artBlock.name}](${artBlock.external_url}) Minted by: \n ${artBlock.mintedBy}`;
+  const image = { url: artBlock.image };
 
   return axios.post(config.discordWebhookUrl, {
-    content: discordText,
+    embeds: [
+      {
+        title,
+        description,
+        image,
+      },
+    ],
   });
 };
