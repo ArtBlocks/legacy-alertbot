@@ -33,11 +33,7 @@ export const uploadTwitterImage = async (
   imgBinary: Buffer
 ): Promise<string | undefined> => {
   try {
-    console.log("Uploading received image to Twitter");
-    const uploadRes = await uploadTwitterMediaWithTimeout(
-      TWITTER_TIMEOUT_MS,
-      imgBinary
-    );
+    const uploadRes = await uploadTwitterMediaWithTimeout(imgBinary);
     return uploadRes;
   } catch (e) {
     console.error(e);
@@ -52,6 +48,7 @@ const tweetArtblock = async (artBlock: ArtBlockInfo) => {
     return;
   }
   const mediaId = await uploadTwitterImage(artBlock.imgBinary);
+  console.log(mediaId)
   if (!mediaId) {
     console.error("no media id returned, not tweeting");
     return;
