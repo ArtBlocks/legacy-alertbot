@@ -1,8 +1,7 @@
 import delay = require("delay");
-import { sendToDiscord } from "discord";
-import { sendToTwitter } from "twitter";
+import { sendToDiscord } from "./discord";
+import { sendToTwitter } from "./twitter";
 import {
-  ArtBlockInfo,
   getArtblockInfo,
   getMinterAddress,
   getOpenseaInfo,
@@ -54,7 +53,8 @@ export const enqueueTokensForAlert = (
       mintedBy = minterAddress;
     }
     await delay(500)
-    sendToTwitter(artBlock, contractVersion);
-    sendToDiscord(artBlock, contractVersion);
+    const artBlockWithOwner = {...artBlock, mintedBy}
+    sendToTwitter(artBlockWithOwner, contractVersion);
+    sendToDiscord(artBlockWithOwner, contractVersion);
   });
 };

@@ -4,7 +4,7 @@ import { config } from "./config";
 
 const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
   const title = artBlock.name;
-  const description = `[${artBlock.name}](${artBlock.external_url}) Minted by: \n ${artBlock.mintedBy}`;
+  const description = `[${artBlock.name}](${artBlock.external_url}) \n ${artBlock.mintedBy ? `\n Minted by: ${artBlock.mintedBy}` : ""}`;
   const image = { url: artBlock.image };
 
   return axios.post(config.discordWebhookUrl, {
