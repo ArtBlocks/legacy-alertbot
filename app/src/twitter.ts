@@ -1,5 +1,5 @@
 import { config } from "./config";
-import { TwitterApi } from "twitter-api-v2";
+import { TweetV1, TwitterApi } from "twitter-api-v2";
 import { ArtBlockInfo } from "./api_data";
 
 const TWITTER_TIMEOUT_MS = 14 * 1000;
@@ -21,10 +21,7 @@ function timeout(timeoutMs: number, failureMessage: string): Promise<never> {
   });
 }
 
-const uploadTwitterMediaWithTimeout = async (
-  timeoutMs: number,
-  based: Buffer
-) => {
+const uploadTwitterMediaWithTimeout = async (based: Buffer) => {
   // use race function to timeout because twitter library doesn't timeout
   return Promise.race([
     timeout(TWITTER_TIMEOUT_MS, "Twitter post timed out"),
@@ -48,7 +45,7 @@ export const uploadTwitterImage = async (
   }
 };
 
-export const tweetArtblock = async (artBlock: ArtBlockInfo) => {
+const tweetArtblock = async (artBlock: ArtBlockInfo) => {
   const imageUrl = artBlock.image;
   if (!artBlock.image) {
     console.error("No artblock image defined", JSON.stringify(artBlock));
@@ -73,4 +70,24 @@ export const tweetArtblock = async (artBlock: ArtBlockInfo) => {
     tweetRes,
     tweetUrl: `https://twitter.com/artblockmints/status/${tweetRes.id_str}`,
   };
+};
+
+export const sendToTwitter = async (
+  artBlock: ArtBlockInfo,
+  contractVersion: string
+) => {
+  let tweetResp:
+    | {
+        tweetRes: TweetV1;
+        tweetUrl: string;
+      }
+    | undefined = undefined;
+  try {
+    tweetResp = await tweetArtblock(artBlock);
+    console.log("Tweet", tweetResp.tweetUrl);
+    return tweetResp;
+  } catch (e) {
+    console.error(e);
+    console.log(contractVersion, "ERROR: cant tweet");
+  }
 };

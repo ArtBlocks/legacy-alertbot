@@ -1,11 +1,11 @@
 import { getArtblockInfo, getOpenseaInfo } from "../api_data";
-import { enqueueTokensForAlert } from "../alerts";
 var assert = require("assert");
 const nock = require("nock");
 
 describe("api_data", () => {
   describe("#getArtblockInfo", () => {
     before(() => {
+      if (!nock.isActive()) nock.activate();
       const tokenScope = nock("https://token.artblocks.io")
         .get("/1")
         .reply(200, {
@@ -21,6 +21,7 @@ describe("api_data", () => {
       tokenScope;
       imgScope;
     });
+    afterEach(nock.cleanAll);
     it("gets additional meta needed for alert", async () => {
       const { name, image, external_url, imgBinary } = await getArtblockInfo(
         "1"

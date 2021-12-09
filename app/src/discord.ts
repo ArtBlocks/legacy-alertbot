@@ -2,7 +2,7 @@ import { ArtBlockInfo } from "./api_data";
 import axios from "axios";
 import { config } from "./config";
 
-export const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
+const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
   const title = artBlock.name;
   const description = `[${artBlock.name}](${artBlock.external_url}) Minted by: \n ${artBlock.mintedBy}`;
   const image = { url: artBlock.image };
@@ -16,4 +16,16 @@ export const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
       },
     ],
   });
+};
+
+export const sendToDiscord = async (
+  artBlock: ArtBlockInfo,
+  contractVersion: string
+) => {
+  try {
+    const discordResp = await discordAlertForArtBlock(artBlock);
+    return discordResp;
+  } catch (e) {
+    console.error(contractVersion, "ERROR: Discord post failed");
+  }
 };

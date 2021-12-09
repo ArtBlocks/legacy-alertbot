@@ -1,3 +1,5 @@
+import { sendToDiscord } from "discord";
+import { sendToTwitter } from "twitter";
 import {
   ArtBlockInfo,
   getArtblockInfo,
@@ -5,7 +7,6 @@ import {
   getOpenseaInfo,
 } from "./api_data";
 import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
-import { processAlert } from "./process_alert";
 
 export const alertForBlocks = async (
   startingBlock: number,
@@ -51,12 +52,7 @@ export const enqueueTokensForAlert = (
     } else if (minterAddress) {
       mintedBy = minterAddress;
     }
-    processAlert(
-      {
-        ...artBlock,
-        mintedBy: openseaName,
-      },
-      contractVersion
-    );
+    sendToTwitter(artBlock, contractVersion);
+    sendToDiscord(artBlock, contractVersion);
   });
 };
