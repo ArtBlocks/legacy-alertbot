@@ -25,9 +25,9 @@ export const sendToDiscord = async (
 ) => {
   try {
     const discordResp = await discordAlertForArtBlock(artBlock);
-    console.log(`[INFO] Discord Message sent, Response: ${JSON.stringify(discordResp)}`)
+    console.log(`[INFO] Discord Message sent.`)
     return discordResp;
   } catch (e) {
-    console.error(`[ERROR] Discord post failed for ${JSON.stringify(artBlock)}`, JSON.stringify(e));
+    console.error(`[ERROR] Discord post failed for ${JSON.stringify(artBlock.tokenID)}`, JSON.stringify(e));
   }
 };
