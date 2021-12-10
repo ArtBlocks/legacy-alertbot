@@ -2,7 +2,7 @@ import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
 import axios from "axios";
 import { sleep } from "./utils";
 
-const TOKEN_RETRIES = 15;
+const TOKEN_RETRIES = 50;
 const TOKEN_RETRY_DELAY_MS = 12 * 1000;
 const IMAGE_RETRIES = 100;
 const IMAGE_RETRY_DELAY_MS = 25 * 1000;
@@ -52,9 +52,8 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
     try {
       return await axios.get(`https://token.artblocks.io/${tokenId}`);
     } catch (e) {
-      console.error(e);
       console.error(
-        `Error while fetching image data. Try ${i + 1} of ${TOKEN_RETRIES}`
+        `Error while fetching token data. Try ${i + 1} of ${TOKEN_RETRIES}`
       );
       await sleep(TOKEN_RETRY_DELAY_MS);
     }
@@ -67,7 +66,6 @@ const getImageResp = async (imageUrl: string): Promise<Response> => {
         responseType: "arraybuffer",
       });
     } catch (e) {
-      console.error(e);
       console.error(
         `Error while fetching image data. Try ${i + 1} of ${IMAGE_RETRIES}`
       );
