@@ -2,4 +2,4 @@
 /app/.env.dev
 /app/.env.remote
 /app/tmp
-.env*
+.env
