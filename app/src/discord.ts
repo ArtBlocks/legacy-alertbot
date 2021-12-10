@@ -16,19 +16,18 @@ const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
       },
     ],
   }
-  console.log(`[INFO] Attempting to send Discord Message ${JSON.stringify(payload)}`)
+  console.log(`[INFO] Attempting to send Discord Message: ${JSON.stringify(payload)}`)
   return axios.post(config.discordWebhookUrl, payload);
 };
 
 export const sendToDiscord = async (
   artBlock: ArtBlockInfo,
-  contractVersion: string
 ) => {
   try {
     const discordResp = await discordAlertForArtBlock(artBlock);
     console.log(`[INFO] Discord Message sent, Response: ${JSON.stringify(discordResp)}`)
     return discordResp;
   } catch (e) {
-    console.error(contractVersion, "ERROR: Discord post failed");
+    console.error(`[ERROR] Discord post failed for ${JSON.stringify(artBlock)}`, JSON.stringify(e));
   }
 };

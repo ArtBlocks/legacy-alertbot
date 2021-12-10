@@ -42,7 +42,7 @@ export const enqueueTokensForAlert = (
   contractVersion: "original" | "v2"
 ) => {
   mintedTokenIds.forEach(async (tokenId) => {
-    console.log("Fetching Complete data for", tokenId);
+    console.log("[INFO] Fetching Complete data for", tokenId);
     const artBlock = await getArtblockInfo(tokenId);
     const minterAddress = await getMinterAddress(tokenId, contractVersion);
     const openseaName = await getOpenseaInfo(minterAddress);
@@ -55,6 +55,6 @@ export const enqueueTokensForAlert = (
     await delay(500)
     const artBlockWithOwner = {...artBlock, mintedBy}
     sendToTwitter(artBlockWithOwner, contractVersion);
-    sendToDiscord(artBlockWithOwner, contractVersion);
+    sendToDiscord(artBlockWithOwner);
   });
 };

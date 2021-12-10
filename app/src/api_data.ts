@@ -52,8 +52,8 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
     try {
       return await axios.get(`https://token.artblocks.io/${tokenId}`);
     } catch (e) {
-      console.error(
-        `Error while fetching token data. Try ${i + 1} of ${TOKEN_RETRIES}`
+      console.warn(
+        `[WARN] No Data for token: ${tokenId}. Try ${i + 1} of ${TOKEN_RETRIES}`
       );
       await sleep(TOKEN_RETRY_DELAY_MS);
     }
@@ -66,8 +66,8 @@ const getImageResp = async (imageUrl: string): Promise<Response> => {
         responseType: "arraybuffer",
       });
     } catch (e) {
-      console.error(
-        `Error while fetching image data. Try ${i + 1} of ${IMAGE_RETRIES}`
+      console.warn(
+        `[WARN] No image data at ${imageUrl}. Try ${i + 1} of ${IMAGE_RETRIES}`
       );
       await sleep(IMAGE_RETRY_DELAY_MS);
     }
