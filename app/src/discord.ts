@@ -1,19 +1,33 @@
-import { ArtBlockInfo, ArtBlocksResponse } from "./artblocks_api";
+import { ArtBlockInfo } from "./api_data";
 import axios from "axios";
 import { config } from "./config";
 
-export const discordAlertForArtBlock = async (
-  artBlock: ArtBlockInfo,
-  postUrl: string,
-  noEmbedUrl?: string
-) => {
-  // noEmbedUrl embeds a link without a discord preview being generated
-  const noEmbedString = noEmbedUrl ? `\n <${noEmbedUrl}>` : "";
-  let discordText = `${artBlock.name} minted${
-    artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ""
-  }. ${noEmbedString} \n ${postUrl}`;
+const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
+  const title = artBlock.name;
+  const description = `[${artBlock.name}](${artBlock.external_url}) \n ${artBlock.mintedBy ? `\n Minted by: ${artBlock.mintedBy}` : ""}`;
+  const image = { url: artBlock.image };
 
-  return axios.post(config.discordWebhookUrl, {
-    content: discordText,
-  });
+  const payload = {
+    embeds: [
+      {
+        title,
+        description,
+        image,
+      },
+    ],
+  }
+  console.log(`[INFO] Attempting to send Discord Message: ${JSON.stringify(payload)}`)
+  return axios.post(config.discordWebhookUrl, payload);
+};
+
+export const sendToDiscord = async (
+  artBlock: ArtBlockInfo,
+) => {
+  try {
+    const discordResp = await discordAlertForArtBlock(artBlock);
+    console.log(`[INFO] Discord Message sent.`)
+    return discordResp;
+  } catch (e) {
+    console.error(`[ERROR] Discord post failed for ${JSON.stringify(artBlock.tokenID)}`, JSON.stringify(e));
+  }
 };

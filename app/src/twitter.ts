@@ -1,11 +1,7 @@
 import { config } from "./config";
-import { TwitterApi } from "twitter-api-v2";
-import axios from "axios";
-import { ArtBlockInfo, ArtBlocksResponse } from "./artblocks_api";
-import { sleep } from "./utils";
+import { TweetV1, TwitterApi } from "twitter-api-v2";
+import { ArtBlockInfo } from "./api_data";
 
-const IMAGE_RETRIES = 35;
-const IMAGE_RETRY_DELAY_MS = 25 * 1000;
 const TWITTER_TIMEOUT_MS = 14 * 1000;
 
 export const twitterClientV2 = new TwitterApi({
@@ -25,10 +21,7 @@ function timeout(timeoutMs: number, failureMessage: string): Promise<never> {
   });
 }
 
-const uploadTwitterMediaWithTimeout = async (
-  timeoutMs: number,
-  based: Buffer
-) => {
+const uploadTwitterMediaWithTimeout = async (based: Buffer) => {
   // use race function to timeout because twitter library doesn't timeout
   return Promise.race([
     timeout(TWITTER_TIMEOUT_MS, "Twitter post timed out"),
@@ -36,36 +29,11 @@ const uploadTwitterMediaWithTimeout = async (
   ]);
 };
 
-const getImageResp = async (imageUrl: string): Promise<Response> => {
-  for (let i = 0; i < IMAGE_RETRIES; i++) {
-    try {
-      return await axios.get(imageUrl, {
-        responseType: "arraybuffer",
-      });
-    } catch (e) {
-      console.error(e);
-      console.error(
-        `Error while fetching image data. Try ${i + 1} of ${IMAGE_RETRIES}`
-      );
-      await sleep(IMAGE_RETRY_DELAY_MS);
-    }
-  }
-};
-
 export const uploadTwitterImage = async (
-  imageUrl: string
+  imgBinary: Buffer
 ): Promise<string | undefined> => {
-  console.log("Getting image from artblocks at: ", imageUrl);
-  const imageResp = await getImageResp(imageUrl);
-  const imageData = imageResp.data as any;
-  const based = Buffer.from(imageData, "binary");
-
   try {
-    console.log("Uploading received image to Twitter");
-    const uploadRes = await uploadTwitterMediaWithTimeout(
-      TWITTER_TIMEOUT_MS,
-      based
-    );
+    const uploadRes = await uploadTwitterMediaWithTimeout(imgBinary);
     return uploadRes;
   } catch (e) {
     console.error(e);
@@ -73,16 +41,14 @@ export const uploadTwitterImage = async (
   }
 };
 
-export const tweetArtblock = async (artBlock: ArtBlockInfo) => {
+const tweetArtblock = async (artBlock: ArtBlockInfo) => {
+  const imageUrl = artBlock.image;
   if (!artBlock.image) {
     console.error("No artblock image defined", JSON.stringify(artBlock));
     return;
   }
-
-  const imageUrl = artBlock.image;
-
-  console.log("Uploading", imageUrl, "original", artBlock.image);
-  const mediaId = await uploadTwitterImage(imageUrl);
+  const mediaId = await uploadTwitterImage(artBlock.imgBinary);
+  console.log(mediaId)
   if (!mediaId) {
     console.error("no media id returned, not tweeting");
     return;
@@ -101,4 +67,24 @@ export const tweetArtblock = async (artBlock: ArtBlockInfo) => {
     tweetRes,
     tweetUrl: `https://twitter.com/artblockmints/status/${tweetRes.id_str}`,
   };
+};
+
+export const sendToTwitter = async (
+  artBlock: ArtBlockInfo,
+  contractVersion: string
+) => {
+  let tweetResp:
+    | {
+        tweetRes: TweetV1;
+        tweetUrl: string;
+      }
+    | undefined = undefined;
+  try {
+    tweetResp = await tweetArtblock(artBlock);
+    console.log("Tweet", tweetResp.tweetUrl);
+    return tweetResp;
+  } catch (e) {
+    console.error(e);
+    console.log(contractVersion, "ERROR: cant tweet");
+  }
 };
