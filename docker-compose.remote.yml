@@ -1,15 +1,22 @@
 version: "3.0"
+x-aws-vpc: ${X_AWS_VPC}
 services:
   web:
-    image: 568813240935.dkr.ecr.us-east-1.amazonaws.com/artblocks-alertbot-web:latest
+    image: ${WEB_IMG_ECR_URI}
     env_file:
       - ./app/.env.remote
     deploy:
       replicas: 1
       update_config:
         parallelism: 1
+  
   redis:
     deploy:
       replicas: 1
       update_config:
         parallelism: 1
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

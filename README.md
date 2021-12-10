@@ -28,12 +28,12 @@ Ideally, this process could be ran as a simple single docker container and poten
     ```
     after build completes, tag your image so you can push the image to the repository:
     ```shell
-    docker tag artblocks-alertbot-web:latest 568813240935.dkr.ecr.us-east-1.amazonaws.com/artblocks-alertbot-web:latest
+    docker tag artblocks-alertbot-web:latest ${WEB_IMG_ECR_URI}
     ```
     push the image to our AWS repository
     > Note: If you experience permissions errors, ensure you docker is properly logged in by filling out and running the template script in `/scripts/docker_login_to_ecs.template.sh`.
     ```shell
-    docker push 568813240935.dkr.ecr.us-east-1.amazonaws.com/artblocks-alertbot-web:latest
+    docker push ${WEB_IMG_ECR_URI}
     cd ../
     ```
 
