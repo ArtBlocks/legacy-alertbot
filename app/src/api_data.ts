@@ -4,7 +4,7 @@ import { sleep } from "./utils";
 
 const TOKEN_RETRIES = 15;
 const TOKEN_RETRY_DELAY_MS = 12 * 1000;
-const IMAGE_RETRIES = 35;
+const IMAGE_RETRIES = 100;
 const IMAGE_RETRY_DELAY_MS = 25 * 1000;
 
 export interface ArtBlocksResponse {
@@ -113,9 +113,15 @@ export const getArtblockInfo = async (
   const apiResponse = await getTokenResp(tokenId);
   const abResp = apiResponse.data as ArtBlocksResponse;
   const imageResp = await getImageResp(abResp.image);
-  const imgBinary = Buffer.from(imageResp.data, "binary");
-  return {
-    ...abResp,
-    imgBinary,
-  };
+  if (imageResp && imageResp.data) {
+    console.log("[INFO] Found Image - Proceeding")
+    const imgBinary = Buffer.from(imageResp.data, "binary");
+    return {
+      ...abResp,
+      imgBinary,
+    };
+  } else {
+    console.warn("[WARN] Image Not Found - Proceeding")
+    return abResp
+  }
 };
