@@ -5,6 +5,7 @@
   "author": "Steve Klebanoff <steve.klebnoff@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "./node_modules/.bin/ts-node ./src/index.ts",
     "generate:typechain": "typechain --target ethers-v5 --outDir ./tmp './abis/*.json'",
     "test": "mocha -r ts-node/register src/test/*"
   },
