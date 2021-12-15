@@ -1,6 +1,4 @@
-/app/node_modules
-/app/.env.dev
-/app/.env.remote
-/app/tmp
-
+node_modules
+.env*
+tmp
 node_modules/
