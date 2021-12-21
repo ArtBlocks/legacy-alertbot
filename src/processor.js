@@ -6,7 +6,7 @@ import {
   getOpenseaInfo,
 } from "./api_data"
 
-module.exports = async function (job: {data: {tokenId: string, contractVersion: 'original' | 'v2'}}) {
+module.exports = async function (job) {
  const {tokenId, contractVersion } = job.data
   console.log("[INFO] Processing Token # ", tokenId)
   console.log("[INFO] Fetching Complete data for ", tokenId);
