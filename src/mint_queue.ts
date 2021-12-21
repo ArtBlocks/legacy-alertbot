@@ -7,7 +7,7 @@ import {
 } from "./api_data";
 import * as Queue from "bull"
 
-export const mintQueue = new Queue('mint alert queue')
+export const mintQueue = new Queue('mint alert queue',  process.env.REDIS_URL)
 
 mintQueue.process(async (job: {data: {tokenId: string, contractVersion: 'original' | 'v2'}}, done: () => void) => {
   const {tokenId, contractVersion } = job.data
