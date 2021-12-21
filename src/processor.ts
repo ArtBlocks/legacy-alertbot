@@ -21,10 +21,8 @@ module.exports = async function (job: {data: {tokenId: string, contractVersion: 
   }
   const artBlockWithOwner = {...artBlock, mintedBy}
 
-  const twitterResp = await sendToTwitter(artBlockWithOwner, contractVersion);
-  const discordResp = await sendToDiscord(artBlockWithOwner);
-  console.log("[INFO] Twitter Response", JSON.stringify(twitterResp.tweetRes))
-  console.log("[INFO] Discord Response", JSON.stringify(discordResp.data))
+  await sendToTwitter(artBlockWithOwner, contractVersion);
+  await sendToDiscord(artBlockWithOwner);
 
   console.log("[INFO] Processed Token # ", tokenId) 
   return Promise.resolve()
