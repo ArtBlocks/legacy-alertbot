@@ -1,4 +1,4 @@
-import { mintQueue } from "mint_queue";
+import { mintQueue } from "./mint_queue";
 import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
 
 export const alertForBlocks = async (
