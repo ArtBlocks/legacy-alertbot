@@ -1,11 +1,4 @@
-import delay = require("delay");
-import { sendToDiscord } from "./discord";
-import { sendToTwitter } from "./twitter";
-import {
-  getArtblockInfo,
-  getMinterAddress,
-  getOpenseaInfo,
-} from "./api_data";
+import { mintQueue } from "./mint_queue";
 import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
 
 export const alertForBlocks = async (
@@ -34,27 +27,7 @@ export const alertForBlocks = async (
     "Found mintedTokenIds",
     JSON.stringify(mintedTokenIds)
   );
-  enqueueTokensForAlert(mintedTokenIds, contractVersion);
-};
-
-export const enqueueTokensForAlert = (
-  mintedTokenIds: string[],
-  contractVersion: "original" | "v2"
-) => {
   mintedTokenIds.forEach(async (tokenId) => {
-    console.log("[INFO] Fetching Complete data for", tokenId);
-    const artBlock = await getArtblockInfo(tokenId);
-    const minterAddress = await getMinterAddress(tokenId, contractVersion);
-    const openseaName = await getOpenseaInfo(minterAddress);
-    let mintedBy;
-    if (openseaName) {
-      mintedBy = openseaName;
-    } else if (minterAddress) {
-      mintedBy = minterAddress;
-    }
-    await delay(500)
-    const artBlockWithOwner = {...artBlock, mintedBy}
-    sendToTwitter(artBlockWithOwner, contractVersion);
-    sendToDiscord(artBlockWithOwner);
+    mintQueue.add({tokenId, contractVersion})
   });
 };
