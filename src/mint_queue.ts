@@ -1,5 +1,4 @@
-
-import * as Queue from "bull"
+const Queue = require("bull")
 
 export const mintQueue = new Queue('mint alert queue',  process.env.REDIS_URL)
 
