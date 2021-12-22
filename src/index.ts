@@ -41,6 +41,10 @@ const tick = async () => {
 
 const initializeCron = async () => {
   await initialize();
+  if (process.env.NODE_ENV != "production") {
+    // run immediately when testing locally for faster workflow
+    tick(); 
+  }
   schedule("*/2 * * * *", tick);
 };
 

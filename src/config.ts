@@ -1,5 +1,7 @@
-const stringFromENVorThrow = (value: string, description: string) => {
-    if (value) {
+const isProd: boolean = (process.env.NODE_ENV == "production");
+
+const stringFromENVorThrow = (value: string, description: string, requiredForDev: boolean) => {
+    if (value || (!requiredForDev && !isProd)) {
         return value;
     } else {
         throw new Error(`Please specify ${description}`);
@@ -7,10 +9,10 @@ const stringFromENVorThrow = (value: string, description: string) => {
 }
 
 export const config = {
-    twitterApiKey: stringFromENVorThrow(process.env.TWITTER_API_KEY, "twitter access token"),
-    twitterApiSecret: stringFromENVorThrow(process.env.TWITTER_API_SECRET, "twitter access token secret"),
-    twitterOauthToken: stringFromENVorThrow(process.env.TWITTER_OAUTH_TOKEN, "twitter oauth token"),
-    twitterOauthSecret: stringFromENVorThrow(process.env.TWITTER_OAUTH_SECRET, "twitter oauth secret"),
-    infuraId: stringFromENVorThrow(process.env.INFURA_ID, "infura id"),
-    discordWebhookUrl: stringFromENVorThrow(process.env.DISCORD_WEBHOOK_URL, "discord webhook url"),
+    twitterApiKey: stringFromENVorThrow(process.env.TWITTER_API_KEY, "twitter access token", false),
+    twitterApiSecret: stringFromENVorThrow(process.env.TWITTER_API_SECRET, "twitter access token secret", false),
+    twitterOauthToken: stringFromENVorThrow(process.env.TWITTER_OAUTH_TOKEN, "twitter oauth token", false),
+    twitterOauthSecret: stringFromENVorThrow(process.env.TWITTER_OAUTH_SECRET, "twitter oauth secret", false),
+    infuraId: stringFromENVorThrow(process.env.INFURA_ID, "infura id", true),
+    discordWebhookUrl: stringFromENVorThrow(process.env.DISCORD_WEBHOOK_URL, "discord webhook url", false),
 }
