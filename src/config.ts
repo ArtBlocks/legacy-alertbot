@@ -1,12 +1,14 @@
 const isProd: boolean = (process.env.NODE_ENV == "production");
+const isTest: boolean = (process.env.NODE_ENV == "test");
 
 const stringFromENVorThrow = (value: string, description: string, requiredForDev: boolean) => {
-    if (value || (!requiredForDev && !isProd)) {
+    if (value || (!requiredForDev && !isProd || !isTest)) {
         return value;
     } else {
         throw new Error(`Please specify ${description}`);
     }
 }
+
 
 export const config = {
     twitterApiKey: stringFromENVorThrow(process.env.TWITTER_API_KEY, "twitter access token", false),

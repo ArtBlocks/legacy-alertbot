@@ -9,6 +9,9 @@
     "generate:typechain": "typechain --target ethers-v5 --outDir ./tmp './abis/*.json'",
     "test": "mocha -r ts-node/register src/test/*"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "dependencies": {
     "@typechain/ethers-v5": "^4.0.0",
     "@types/mocha": "^9.0.0",
