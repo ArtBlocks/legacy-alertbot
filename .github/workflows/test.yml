@@ -1,5 +1,3 @@
-name: Deploy to Heroku
-
 name: Tests
 'on':
   pull_request:
