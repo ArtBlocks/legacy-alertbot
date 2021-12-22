@@ -15,11 +15,10 @@ Currently, the ability to run the bot locally is not configured (see Issue #15).
 
 ## Running Locally
 
->Curently, alertbot is not very well sandboxed. This means the bot will post to production Twitter and Discord when running locally. It is therefore not recommended to run the bot locally unless you know what you are doing.
-
->Ideally, dev twitter and discord bots can be set up for this in the future.
+>Curently, alertbot does not have sandboxed twitter and discord bots set up. For now, it has logic that only posts to production if an env variable NODE_ENV is set to `"production"`. This is true on the production heroku instance running the bot, but shouldn't be set in a local .env file. Logs are displayed when running locally to indicate that the bot **would** have posted to twitter and discord.
 
 To run locally:
-- ensure local `.env` file is populated as desired
+- ensure local `.env` file is populated using template in `.env.example` (no prod env vars required)
 - spin up a redis instance (default port recommended `localhost:6379`)
+  - reminder: you can always delete all keys from Redis database via `redis-cli flushall`
 - run `yarn start`

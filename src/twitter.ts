@@ -4,12 +4,14 @@ import { ArtBlockInfo } from "./api_data";
 
 const TWITTER_TIMEOUT_MS = 14 * 1000;
 
-export const twitterClientV2 = new TwitterApi({
-  appKey: config.twitterApiKey,
-  appSecret: config.twitterApiSecret,
-  accessToken: config.twitterOauthToken,
-  accessSecret: config.twitterOauthSecret,
-});
+export const twitterClientV2 = (process.env.NODE_ENV == "production") 
+  ? new TwitterApi({
+    appKey: config.twitterApiKey,
+    appSecret: config.twitterApiSecret,
+    accessToken: config.twitterOauthToken,
+    accessSecret: config.twitterOauthSecret,
+  })
+  : new TwitterApi();
 
 export interface Response {
   data: any;
