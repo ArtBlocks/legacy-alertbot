@@ -2,7 +2,10 @@ import * as redis from 'redis';
 import { promisify } from 'util';
 
 const redisClient = redis.createClient({
-    url: process.env.REDIS_URL
+    url: process.env.REDIS_URL,
+    tls: {
+        rejectUnauthorized: false
+    }
 });
 
 const getAsyncRaw = promisify(redisClient.get);
