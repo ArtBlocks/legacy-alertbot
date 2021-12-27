@@ -7,6 +7,9 @@ import {
   getOpenseaInfo,
 } from "./api_data";
 import delay = require("delay");
+import Bull = require("bull");
+
+const HOUR_MS = 1000 * 60 * 60;
 
 export const mintQueue = new Queue('mint alert queue',  process.env.REDIS_URL)
 
@@ -39,3 +42,17 @@ mintQueue.process(
     done()
   }
 )
+
+/*
+ * This clears old bull queue keys,
+ * jobs that have existed > 24 hours and are either
+ * completed or failed.
+*/
+export const queueClean = async () => {
+  mintQueue.clean(HOUR_MS * 24, 'completed');
+  mintQueue.clean(HOUR_MS * 24, 'failed');
+}
+
+mintQueue.on('cleaned', function(jobs: number[], type: string) {
+  console.log(`[INFO] Cleaned ${jobs.length} ${type} jobs`);
+})

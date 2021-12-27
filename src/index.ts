@@ -7,6 +7,7 @@ import {
 } from "./storage";
 import { alertForBlocks } from "./alerts";
 import { schedule } from "node-cron";
+import { queueClean } from "./mint_queue";
 
 let isRunning = false;
 const tick = async () => {
@@ -39,7 +40,7 @@ const tick = async () => {
   }
 };
 
-const initializeCron = async () => {
+const initializeTick = async () => {
   await initialize();
   if (process.env.NODE_ENV != "production") {
     // run immediately when testing locally for faster workflow
@@ -48,4 +49,7 @@ const initializeCron = async () => {
   schedule("*/2 * * * *", tick);
 };
 
-initializeCron();
+initializeTick();
+
+// clean stale queue keys once per day
+schedule("0 0 * * *", queueClean);
