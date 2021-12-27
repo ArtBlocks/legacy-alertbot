@@ -7,7 +7,6 @@ import {
   getOpenseaInfo,
 } from "./api_data";
 import delay = require("delay");
-import Bull = require("bull");
 
 const HOUR_MS = 1000 * 60 * 60;
 
