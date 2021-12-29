@@ -13,7 +13,6 @@ var redisClient = new Redis({
     requestCert: true,
     agent: false
   }
-});
 
 const getAsyncRaw = promisify(redisClient.get);
 export const getRedisAsync = getAsyncRaw.bind(redisClient) as typeof getAsyncRaw;
