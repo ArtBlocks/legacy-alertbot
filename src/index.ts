@@ -1,55 +1,25 @@
+import { mintQueue } from "./mint_queue"
+
 require('dotenv').config()
-import {
-  getAppropriateEndingBlock,
-  getLastBlockAlerted,
-  setLastBlockAlerted,
-  initialize,
-} from "./storage";
-import { alertForBlocks } from "./alerts";
-import { schedule } from "node-cron";
-import { queueClean } from "./mint_queue";
+const express = require('express')
+const app = express()
+const port = 8000
+app.use(express.json())
 
-let isRunning = false;
-const tick = async () => {
-  if (isRunning) {
-    console.log(`Not ticking because running`);
-    return;
-  }
+app.post('/', (req: any, res: any) => {
+  const newData = req?.body?.event?.data?.new
+  if(newData) {
+    console.log("[INFO] Received Webhook for ", newData)
+    const tokenId = newData?.token_id,
+     contractVersion = newData?.contract_address;
+     mintQueue.add({tokenId, contractVersion})
+     res.status(200).json({status:"ok"})
+     return 
+  } 
+})
 
-  console.log(`${new Date().toLocaleString()} Ticking...`);
+app.listen(port, () => {
+  console.log('listening on ', port)
+})
 
-  const lastBlockAlerted = await getLastBlockAlerted();
-  if (!lastBlockAlerted) {
-    throw new Error(`No last block set`);
-  }
-  const endingBlock = await getAppropriateEndingBlock();
-  console.info(`Querying for `, { lastBlockAlerted, endingBlock });
-
-  isRunning = true;
-  try {
-    await alertForBlocks(lastBlockAlerted, endingBlock, "original");
-    await alertForBlocks(lastBlockAlerted, endingBlock, "v2");
-    console.log("Tick successfully completed.");
-  } catch (e) {
-    console.log("error");
-    console.error(e);
-    console.log("Tick errored out.");
-  } finally {
-    await setLastBlockAlerted(endingBlock);
-    isRunning = false;
-  }
-};
-
-const initializeTick = async () => {
-  await initialize();
-  if (process.env.NODE_ENV != "production") {
-    // run immediately when testing locally for faster workflow
-    tick(); 
-  }
-  schedule("*/2 * * * *", tick);
-};
-
-initializeTick();
-
-// clean stale queue keys once per day
-schedule("0 0 * * *", queueClean);
+module.exports = app

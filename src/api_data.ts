@@ -4,8 +4,6 @@ import { sleep } from "./utils";
 
 const TOKEN_RETRIES = 50;
 const TOKEN_RETRY_DELAY_MS = 12 * 1000;
-const IMAGE_RETRIES = 100;
-const IMAGE_RETRY_DELAY_MS = 25 * 1000;
 
 export interface ArtBlocksResponse {
   platform: string;
@@ -48,30 +46,25 @@ export interface Response {
 }
 
 const getTokenResp = async (tokenId: string): Promise<Response> => {
-  for (let i = 0; i < TOKEN_RETRIES; i++) {
     try {
       return await axios.get(`https://token.artblocks.io/${tokenId}`);
     } catch (e) {
       console.warn(
-        `[WARN] No Data for token: ${tokenId}. Try ${i + 1} of ${TOKEN_RETRIES}`
+        `[WARN] No Data for token: ${tokenId}`
       );
-      await sleep(TOKEN_RETRY_DELAY_MS);
-    }
   }
 };
+
 const getImageResp = async (imageUrl: string): Promise<Response> => {
-  for (let i = 0; i < IMAGE_RETRIES; i++) {
     try {
       return await axios.get(imageUrl, {
         responseType: "arraybuffer",
       });
     } catch (e) {
       console.warn(
-        `[WARN] No image data at ${imageUrl}. Try ${i + 1} of ${IMAGE_RETRIES}`
+        `[WARN] No image data at ${imageUrl}`
       );
-      await sleep(IMAGE_RETRY_DELAY_MS);
     }
-  }
 };
 
 export const getMinterAddress = async (
