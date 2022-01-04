@@ -2,7 +2,6 @@ import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
 import axios from "axios";
 import { sleep } from "./utils";
 
-const TOKEN_RETRIES = 50;
 const TOKEN_RETRY_DELAY_MS = 12 * 1000;
 
 export interface ArtBlocksResponse {
