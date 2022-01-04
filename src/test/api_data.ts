@@ -1,6 +1,7 @@
 import { getArtblockInfo, getOpenseaInfo } from "../api_data";
 var assert = require("assert");
 const nock = require("nock");
+process.env.NODE_ENV = 'test';
 
 describe("api_data", () => {
   describe("#getArtblockInfo", () => {

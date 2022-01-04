@@ -1,7 +1,4 @@
-import { artBlocksContract, v2ArtBlocksContract } from "./ethereum";
 import axios from "axios";
-import { sleep } from "./utils";
-
 
 export interface ArtBlocksResponse {
   platform: string;
@@ -63,16 +60,6 @@ const getImageResp = async (imageUrl: string): Promise<Response> => {
         `[WARN] No image data at ${imageUrl}`
       );
     }
-};
-
-export const getMinterAddress = async (
-  tokenId: string,
-  contractVersion: "original" | "v2"
-) => {
-  const contractToUse =
-    contractVersion === "original" ? artBlocksContract : v2ArtBlocksContract;
-  const ownerAddress = await contractToUse.ownerOf(tokenId);
-  return ownerAddress.toLowerCase();
 };
 
 export const getOpenseaInfo = async (account: string): Promise<string> => {

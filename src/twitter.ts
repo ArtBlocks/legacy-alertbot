@@ -73,7 +73,6 @@ const tweetArtblock = async (artBlock: ArtBlockInfo) => {
 
 export const sendToTwitter = async (
   artBlock: ArtBlockInfo,
-  contractVersion: string
 ) => {
   let tweetResp:
     | {
@@ -86,7 +85,6 @@ export const sendToTwitter = async (
     console.log("Tweet", tweetResp.tweetUrl);
     return tweetResp;
   } catch (e) {
-    console.error(e);
-    console.log(contractVersion, "ERROR: cant tweet");
+    console.error("[ERROR]: ", e);
   }
 };

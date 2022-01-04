@@ -2,7 +2,7 @@ const isProd: boolean = (process.env.NODE_ENV == "production");
 const isTest: boolean = (process.env.NODE_ENV == "test");
 
 const stringFromENVorThrow = (value: string, description: string, requiredForDev: boolean) => {
-    if (value || (!requiredForDev && !isProd || !isTest)) {
+    if (value || (!requiredForDev && !isProd || isTest)) {
         return value;
     } else {
         throw new Error(`Please specify ${description}`);
