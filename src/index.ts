@@ -30,7 +30,7 @@ const allowed = (webhookHeader: string) => {
 }
 
 const contractAllowed = (contract: string) => {
-  return contracts().includes(contract)
+  return contracts().map(addy => addy.toLowerCase()).includes(contract)
 }
 
 app.post('/', (req: any, res: any) => {
@@ -46,7 +46,6 @@ app.post('/', (req: any, res: any) => {
     }  else {
       res.status(304).json({status: 'not modified'})
     }
-
   } else {
     res.status(401).json({status: 'unauthorized'})
   }
