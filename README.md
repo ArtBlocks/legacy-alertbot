@@ -11,8 +11,6 @@ A twitter bot that:
 
 Alertbot is deployed automatically to Heroku every push to `main` via Heroku's GitHub integration.
 
-Currently, the ability to run the bot locally is not configured (see Issue #15).  
-
 ## Running Locally
 
 >Curently, alertbot does not have sandboxed twitter and discord bots set up. For now, it has logic that only posts to production if an env variable NODE_ENV is set to `"production"`. This is true on the production heroku instance running the bot, but shouldn't be set in a local .env file. Logs are displayed when running locally to indicate that the bot **would** have posted to twitter and discord.
