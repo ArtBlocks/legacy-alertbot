@@ -1,55 +1,45 @@
+import { schedule } from "node-cron"
+import { mintQueue, queueClean } from "./mint_queue"
+import { config } from "./config";
+
 require('dotenv').config()
-import {
-  getAppropriateEndingBlock,
-  getLastBlockAlerted,
-  setLastBlockAlerted,
-  initialize,
-} from "./storage";
-import { alertForBlocks } from "./alerts";
-import { schedule } from "node-cron";
-import { queueClean } from "./mint_queue";
+const express = require('express')
+const app = express()
+const port = 8000
+app.use(express.json())
 
-let isRunning = false;
-const tick = async () => {
-  if (isRunning) {
-    console.log(`Not ticking because running`);
-    return;
+
+const allowed = (webhookHeader: string) => {
+  if(webhookHeader === config.webhookSecret || process.env.NODE_ENV === "test") {
+    return true
+  } else {
+    return false
   }
+}
 
-  console.log(`${new Date().toLocaleString()} Ticking...`);
+app.post('/', (req: any, res: any) => {
+  if(allowed) {
+    const newData = req?.body?.event?.data?.new
+    const oldData = req?.body?.event?.data?.old
+    if(newData && !oldData.image_id) {
+      console.log("[INFO] Received Webhook for ", newData)
+      const tokenId = newData?.token_id
+      const ownerAddress = newData?.owner_address
+      mintQueue.add({tokenId, ownerAddress})
+      res.status(200).json({status:"ok"})
+    }  else {
+      res.status(304).json({status: 'not modified'})
+    }
 
-  const lastBlockAlerted = await getLastBlockAlerted();
-  if (!lastBlockAlerted) {
-    throw new Error(`No last block set`);
+  } else {
+    res.status(401).json({status: 'unauthorized'})
   }
-  const endingBlock = await getAppropriateEndingBlock();
-  console.info(`Querying for `, { lastBlockAlerted, endingBlock });
+})
 
-  isRunning = true;
-  try {
-    await alertForBlocks(lastBlockAlerted, endingBlock, "original");
-    await alertForBlocks(lastBlockAlerted, endingBlock, "v2");
-    console.log("Tick successfully completed.");
-  } catch (e) {
-    console.log("error");
-    console.error(e);
-    console.log("Tick errored out.");
-  } finally {
-    await setLastBlockAlerted(endingBlock);
-    isRunning = false;
-  }
-};
+app.listen(port, () => {
+  console.log('listening on ', port)
+})
 
-const initializeTick = async () => {
-  await initialize();
-  if (process.env.NODE_ENV != "production") {
-    // run immediately when testing locally for faster workflow
-    tick(); 
-  }
-  schedule("*/2 * * * *", tick);
-};
-
-initializeTick();
-
-// clean stale queue keys once per day
 schedule("0 0 * * *", queueClean);
+
+module.exports = app
