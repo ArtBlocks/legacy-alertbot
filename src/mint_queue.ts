@@ -28,8 +28,16 @@ mintQueue.process(
     const artBlockWithOwner = {...artBlock, mintedBy}
     if (process.env.NODE_ENV == "production") {
         // only post to socials if production env
-        sendToTwitter(artBlockWithOwner);
-        sendToDiscord(artBlockWithOwner);
+        try {
+          sendToTwitter(artBlockWithOwner);
+        } catch (err) {
+          console.error(`[ERROR] Tweet failed`, err)
+        }
+        try {
+          sendToDiscord(artBlockWithOwner);
+        } catch (err) {
+          console.error(`[ERROR] Discord Post failed`, err)
+        }
     } else {
         // wait, then log that we *would* have posted if a prod env
         await delay(5000);
