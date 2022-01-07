@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "./node_modules/.bin/ts-node ./src/index.ts",
-    "test": "mocha --exit -r ts-node/register src/test/*"
+    "test": "mocha --exit -r ts-node/register src/test/*",
+    "delete-tweet": "run(){ ./node_modules/.bin/ts-node ./src/scripts/delete_tweet.ts $1; }; run"
   },
   "dependencies": {
     "@types/bull": "^3.15.7",
