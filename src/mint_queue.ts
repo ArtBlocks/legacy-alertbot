@@ -9,7 +9,12 @@ import delay = require("delay");
 
 const HOUR_MS = 1000 * 60 * 60;
 
-export const mintQueue = new Queue('mint alert queue',  process.env.REDIS_URL)
+export const mintQueue = new Queue('mint alert queue', {
+  settings: {
+    lockDuration: 1 * 60 * 1000, // 5mins
+    stalledInterval: 1 * 60 * 1000, // 5mins
+  },
+},  process.env.REDIS_URL)
 
 mintQueue.process(
   parseInt(process.env.QUEUE_CONCURRENCY), 
@@ -29,12 +34,12 @@ mintQueue.process(
     if (process.env.NODE_ENV == "production") {
         // only post to socials if production env
         try {
-          sendToTwitter(artBlockWithOwner);
+          await sendToTwitter(artBlockWithOwner);
         } catch (err) {
           console.error(`[ERROR] Tweet failed`, err)
         }
         try {
-          sendToDiscord(artBlockWithOwner);
+          await sendToDiscord(artBlockWithOwner);
         } catch (err) {
           console.error(`[ERROR] Discord Post failed`, err)
         }
