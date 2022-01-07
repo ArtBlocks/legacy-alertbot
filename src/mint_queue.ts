@@ -61,3 +61,9 @@ export const queueClean = async () => {
 mintQueue.on('cleaned', function(jobs: number[], type: string) {
   console.log(`[INFO] Cleaned ${jobs.length} ${type} jobs`);
 })
+
+mintQueue.on('stalled', function () {
+  console.warn("[WARN] Queue Stalled")
+  
+  // Job completed with output result!
+})
