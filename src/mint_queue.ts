@@ -49,6 +49,7 @@ mintQueue.process(
         console.log(`[INFO] WOULD have posted ${tokenId} to twitter and discord if prod`);
     }
     console.log("[INFO] Token Processed #", tokenId )
+    await delay(20);
     done()
   }
 )
