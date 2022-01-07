@@ -26,3 +26,10 @@ To run locally:
 - spin up a redis instance (default port recommended `localhost:6379`)
   - reminder: you can always delete all keys from Redis database via `redis-cli flushall`
 - run `yarn start`
+
+## Deleting Tweets
+Accidental tweets may be deleted via Twitter's api by running the following script:
+>note: `.env.prod` must be populated with production twitter api keys and auth
+```
+yarn delete-tweet <tweet-id>
+```
