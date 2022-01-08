@@ -9,12 +9,12 @@ import delay = require("delay");
 
 const HOUR_MS = 1000 * 60 * 60;
 
-export const mintQueue = new Queue('mint alert queue', {
+export const mintQueue = new Queue("mint alert queue", process.env.REDIS_URL, {
   settings: {
     lockDuration: 1 * 60 * 1000, // 5mins
     stalledInterval: 1 * 60 * 1000, // 5mins
   },
-},  process.env.REDIS_URL)
+});
 
 mintQueue.process(
   parseInt(process.env.QUEUE_CONCURRENCY), 
