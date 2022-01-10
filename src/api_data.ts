@@ -51,8 +51,10 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
 };
 
 const getImageResp = async (imageUrl: string): Promise<Response> => {
+  const encodedImgUri = encodeURIComponent(imageUrl)
+  const imgUrlSmall = `https://www.artblocks.io/_next/image?url=${encodedImgUri}&w=640&q=100`
     try {
-      return await axios.get(imageUrl, {
+      return await axios.get(imgUrlSmall, {
         responseType: "arraybuffer",
       });
     } catch (e) {
