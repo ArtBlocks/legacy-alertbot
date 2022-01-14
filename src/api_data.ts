@@ -50,11 +50,10 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
   }
 };
 
-const getImageResp = async (imageUrl: string): Promise<Response> => {
-  const encodedImgUri = encodeURIComponent(imageUrl)
-  const imgUrlSmall = `https://www.artblocks.io/_next/image?url=${encodedImgUri}&w=640&q=100`
+const getImageResp = async (tokenId: string): Promise<Response> => {
+  const imageUrl = `${process.env.THUMBNAIL_LOCATION}/${tokenId}`
     try {
-      return await axios.get(imgUrlSmall, {
+      return await axios.get(imageUrl, {
         responseType: "arraybuffer",
       });
     } catch (e) {
@@ -90,7 +89,7 @@ export const getArtblockInfo = async (
 ): Promise<ArtBlockInfo> => {
   const apiResponse = await getTokenResp(tokenId);
   const abResp = apiResponse.data as ArtBlocksResponse;
-  const imageResp = await getImageResp(abResp.image);
+  const imageResp = await getImageResp(tokenId);
   if (imageResp && imageResp.data) {
     console.log("[INFO] Found Image - Proceeding")
     const imgBinary = Buffer.from(imageResp.data, "binary");
