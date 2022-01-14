@@ -16,6 +16,5 @@ export const config = {
     twitterOauthToken: stringFromENVorThrow(process.env.TWITTER_OAUTH_TOKEN, "twitter oauth token", false),
     twitterOauthSecret: stringFromENVorThrow(process.env.TWITTER_OAUTH_SECRET, "twitter oauth secret", false),
     discordWebhookUrl: stringFromENVorThrow(process.env.DISCORD_WEBHOOK_URL, "discord webhook url", false),
-    webhookSecret: stringFromENVorThrow(process.env.WEBHOOK_SECRET, 'webhook secret', false),
-    thumbnailLocation: stringFromENVorThrow(process.env.THUMBNAIL_LOCATION, 'thumbnail location', false) 
+    webhookSecret: stringFromENVorThrow(process.env.WEBHOOK_SECRET, 'webhook secret', true)
 }

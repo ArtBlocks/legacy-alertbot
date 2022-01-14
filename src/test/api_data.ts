@@ -2,7 +2,6 @@ import { getArtblockInfo, getOpenseaInfo } from "../api_data";
 var assert = require("assert");
 const nock = require("nock");
 process.env.NODE_ENV = 'test';
-process.env.THUMBNAIL_LOCATION = "https://artblocks-mainthumb.s3.amazonaws.com"
 
 describe("api_data", () => {
   describe("#getArtblockInfo", () => {
@@ -15,8 +14,8 @@ describe("api_data", () => {
           image: "https://media.artblocks.io/1.png",
           external_url: "https://www.artblocks.io/token/1",
         });
-      const imgScope = nock("https://artblocks-mainthumb.s3.amazonaws.com")
-        .get("/1")
+      const imgScope = nock("https://www.artblocks.io")
+        .get("/_next/image?url=https%3A%2F%2Fmedia.artblocks.io%2F1.png&w=640&q=100")
         .reply(200, {
           data: new ArrayBuffer(8),
         });
