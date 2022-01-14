@@ -43,7 +43,7 @@ export interface Response {
 
 const getTokenResp = async (tokenId: string): Promise<Response> => {
     try {
-      return await axios.get(`https://token.artblocks.io/${tokenId}`);
+      return await axios.get(`https://token.artblocks.io/${tokenId}.png`);
     } catch (e) {
       console.warn(
         `[WARN] No Data for token: ${tokenId}`
