@@ -52,7 +52,8 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
 };
 
 const getImageResp = async (tokenId: string): Promise<Response> => {
-  const imageUrl = `${config.thumbnailLocation}/${tokenId}`
+  const thumbnailLocation = config?.thumbnailLocation || "https://artblocks-mainthumb.s3.amazonaws.com"
+  const imageUrl = `${thumbnailLocation}/${tokenId}`
     try {
       return await axios.get(imageUrl, {
         responseType: "arraybuffer",
