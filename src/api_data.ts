@@ -1,4 +1,5 @@
 import axios from "axios";
+import { config } from "./config";
 
 export interface ArtBlocksResponse {
   platform: string;
@@ -51,7 +52,7 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
 };
 
 const getImageResp = async (tokenId: string): Promise<Response> => {
-  const imageUrl = `${process.env.THUMBNAIL_LOCATION}/${tokenId}`
+  const imageUrl = `${config.thumbnailLocation}/${tokenId}`
     try {
       return await axios.get(imageUrl, {
         responseType: "arraybuffer",

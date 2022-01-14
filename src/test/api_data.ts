@@ -2,6 +2,7 @@ import { getArtblockInfo, getOpenseaInfo } from "../api_data";
 var assert = require("assert");
 const nock = require("nock");
 process.env.NODE_ENV = 'test';
+process.env.THUMBNAIL_LOCATION = "https://artblocks-mainthumb.s3.amazonaws.com"
 
 describe("api_data", () => {
   describe("#getArtblockInfo", () => {
