@@ -16,7 +16,7 @@ describe("api_data", () => {
           external_url: "https://www.artblocks.io/token/1",
         });
       const imgScope = nock("https://artblocks-mainthumb.s3.amazonaws.com")
-        .get("/1")
+        .get("/1.png")
         .reply(200, {
           data: new ArrayBuffer(8),
         });
