@@ -43,7 +43,7 @@ export interface Response {
 
 const getTokenResp = async (tokenId: string): Promise<Response> => {
     try {
-      return await axios.get(`https://token.artblocks.io/${tokenId}.png`);
+      return await axios.get(`https://token.artblocks.io/${tokenId}`);
     } catch (e) {
       console.warn(
         `[WARN] No Data for token: ${tokenId}`
@@ -53,7 +53,7 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
 
 const getImageResp = async (tokenId: string): Promise<Response> => {
   const thumbnailLocation = config?.thumbnailLocation || "https://artblocks-mainthumb.s3.amazonaws.com"
-  const imageUrl = `${thumbnailLocation}/${tokenId}`
+  const imageUrl = `${thumbnailLocation}/${tokenId}.png`
     try {
       return await axios.get(imageUrl, {
         responseType: "arraybuffer",
