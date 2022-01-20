@@ -13,7 +13,7 @@ Alertbot is deployed automatically to Heroku every push to `main` via Heroku's G
 
 ## Supporting Your PBAB Project
 
-Are you a PBAB partner? Alertbot is readily forkable to support your project! 
+Are you a PBAB partner? Alertbot is readily forkable to support your project! [Start Here!](https://github.com/ArtBlocks/alertbot/blob/pbab-readme/PBAB-QUICK-START.md)
 
 Shoot us a message in Discord and we can help you with getting things wired up :)
 
