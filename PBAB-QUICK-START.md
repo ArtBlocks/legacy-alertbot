@@ -9,7 +9,7 @@ Fork this repo into your organization.
 
 # Adjust Code. 
 
-1. Allow your contracts here - https://github.com/ArtBlocks/alertbot/blob/main/src/index.ts#L13-L15, remove ab contracts. 
+1. Allow your contracts here - https://github.com/ArtBlocks/alertbot/blob/main/src/index.ts#L13-L15, remove the Art Blocks contracts. 
 2. Update this endpoint https://github.com/ArtBlocks/alertbot/blob/main/src/api_data.ts#L46 - use {contractAddress/tokenId} 
 3. Provide location for smaller images. If none available, use your defualt image bucket. https://github.com/ArtBlocks/alertbot/blob/main/src/config.ts#L20. 
       - NOTE: If default image bucket is used, you may run up against twitter image size limits.
@@ -24,3 +24,7 @@ We like using Heroku as it is easy to deploy quickly. If you rather not use hero
 2. Provision REDIS - https://devcenter.heroku.com/articles/heroku-redis (use hobby level, so you can skip the SSL setup)
 3. Set Environment Variables in Heroku console. 
 
+
+# Having trouble?
+
+Please add an issue [here](https://github.com/ArtBlocks/alertbot/issues)
