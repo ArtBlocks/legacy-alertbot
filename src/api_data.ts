@@ -59,8 +59,8 @@ const getImageResp = async (tokenId: string): Promise<Response> => {
         responseType: "arraybuffer",
       });
     } catch (e) {
-      console.warn(
-        `[WARN] No image data at ${imageUrl}`
+      console.error(
+        `[ERROR] No image data at ${imageUrl}`
       );
     }
 };
@@ -100,7 +100,7 @@ export const getArtblockInfo = async (
       imgBinary,
     };
   } else {
-    console.warn("[WARN] Image Not Found - Proceeding")
+    console.error("[ERROR] Image Not Found - Proceeding")
     return abResp
   }
 };
