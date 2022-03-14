@@ -1,4 +1,4 @@
-import { webhookDataMint, webhookDataChangeInImage } from "./mocks/webhook";
+import { webhookDataMint, webhookDataMint0, webhookDataChangeInImage } from "./mocks/webhook";
 
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
@@ -18,6 +18,15 @@ describe('/ receives hasura webhook', () => {
         .send(webhookDataMint)
         .end((err: any, res: any) => {
           res.should.have.status(202);
+          done()
+        });
+  });
+  it('receives webhook with mint 0 and returns 418', (done) => {
+    chai.request(app)
+        .post('/')
+        .send(webhookDataMint0)
+        .end((err: any, res: any) => {
+          res.should.have.status(418);
           done()
         });
   });
