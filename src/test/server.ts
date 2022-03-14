@@ -1,4 +1,4 @@
-import { webhookDataMint, webhookDataMint0, webhookDataChangeInImage } from "./mocks/webhook";
+import { webhookDataMint, webhookDataMint0, webhookDataUnknownContract, webhookDataChangeInImage } from "./mocks/webhook";
 
 //During the test the env variable is set to test
 process.env.NODE_ENV = 'test';
@@ -27,6 +27,15 @@ describe('/ receives hasura webhook', () => {
         .send(webhookDataMint0)
         .end((err: any, res: any) => {
           res.should.have.status(418);
+          done()
+        });
+  });
+  it('receives webhook for unknown contract and returns 501', (done) => {
+    chai.request(app)
+        .post('/')
+        .send(webhookDataUnknownContract)
+        .end((err: any, res: any) => {
+          res.should.have.status(501);
           done()
         });
   });
