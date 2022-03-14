@@ -34,11 +34,6 @@ const contractAllowed = (contract: string) => {
 }
 
 app.post('/', (req: any, res: any) => {
-  const isMintZero = (tokenId % 1e6) === 0
-  if (isMintZero) {
-
-  }
-
   // Return early if webhook request is unauthorized.
   if(!allowed(req.get('webhook_secret'))) {
     // https://httpwg.org/specs/rfc7235.html#status.401
