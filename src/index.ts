@@ -47,7 +47,6 @@ app.post('/', (req: any, res: any) => {
 
   // Return early if token has not been modified.
   if(newData == null || oldData.image_id) {
-  } else {
     // https://httpwg.org/specs/rfc7232.html#status.304
     res.status(304).json({status: 'not modified'})
     return
