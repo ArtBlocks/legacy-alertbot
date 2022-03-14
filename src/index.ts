@@ -34,21 +34,50 @@ const contractAllowed = (contract: string) => {
 }
 
 app.post('/', (req: any, res: any) => {
-  if(allowed(req.get('webhook_secret'))) {
-    const newData = req?.body?.event?.data?.new
-    const oldData = req?.body?.event?.data?.old
-    if(newData && !oldData.image_id && contractAllowed(newData?.contract_address)) {
-      console.log("[INFO] Received Webhook for ", newData)
-      const tokenId = newData?.token_id
-      const ownerAddress = newData?.owner_address
-      mintQueue.add({tokenId, ownerAddress})
-      res.status(200).json({status:"ok"})
-    }  else {
-      res.status(304).json({status: 'not modified'})
-    }
-  } else {
-    res.status(401).json({status: 'unauthorized'})
+  const isMintZero = (tokenId % 1e6) === 0
+  if (isMintZero) {
+
   }
+
+  // Return early if webhook request is unauthorized.
+  if(!allowed(req.get('webhook_secret'))) {
+    // https://httpwg.org/specs/rfc7235.html#status.401
+    res.status(401).json({status: 'unauthorized'})
+    return
+  }
+
+  const newData = req?.body?.event?.data?.new
+  const oldData = req?.body?.event?.data?.old
+  console.log("[INFO] Received Webhook for ", newData)
+
+  // Return early if token has not been modified.
+  if(newData == null || oldData.image_id) {
+  } else {
+    // https://httpwg.org/specs/rfc7232.html#status.304
+    res.status(304).json({status: 'not modified'})
+    return
+  }
+
+  // Return early if contract is not a known/allowed contract.
+  if(!contractAllowed(newData?.contract_address)) {
+    // https://httpwg.org/specs/rfc7231.html#status.501
+    res.status(501).json({status: 'not implemented'})
+    return
+  }
+
+  const tokenId = newData?.token_id
+
+  // Return early if token ID is a mint #0.
+  if (tokenId % 1e6 === 0) {
+    // https://datatracker.ietf.org/doc/html/rfc2324#section-2.3.2
+    res.status(418).json({status: "I'm a teapot"})
+    return
+  }
+
+  const ownerAddress = newData?.owner_address
+  mintQueue.add({tokenId, ownerAddress})
+  // https://datatracker.ietf.org/doc/html/rfc7231#section-6.3.3
+  res.status(202).json({status:'accepted'})
 })
 
 app.listen(port, () => {
