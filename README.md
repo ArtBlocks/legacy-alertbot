@@ -4,8 +4,8 @@
 
 A twitter bot that:
 
-- Posts every newly minted Art Block NFT to Twitter (@artblocksmints)
-- Posts every newly minted Art Block NFT to Discord in the `artblocks-mints` channel
+- Posts every newly minted Art Block NFT[^1] to Twitter (@artblocksmints)
+- Posts every newly minted Art Block NFT[^1] to Discord in the `artblocks-mints` channel
 
 ## Deployment
 
@@ -33,3 +33,5 @@ Accidental tweets may be deleted via Twitter's api by running the following scri
 ```
 yarn delete-tweet <tweet-id>
 ```
+
+[^1]: Mint #0 for a new project will always be skipped by alertbot in the interest of preventing broken links, as mint #0 is usually performed before a project has been activated, in which case the Generator API for that project will not yet be publicly accessible in the interest of maintaining some artist privacy for accessing this data outside of direct contract calls during the development process. If you are a PBAB partner and would like to modify this behavior for your alertbot integration, please reach out! :)
