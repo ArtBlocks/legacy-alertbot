@@ -8,6 +8,7 @@ const app = express()
 const port = process.env.PORT || 8000
 app.use(express.json())
 
+const skippedProjects = new Set([289]);
 
 const contracts = () => {
   const addys = {
@@ -59,10 +60,17 @@ app.post('/', (req: any, res: any) => {
     return
   }
 
-  const tokenId = newData?.token_id
-
   // Return early if token ID is a mint #0.
+  const tokenId = newData?.token_id
   if (tokenId % 1e6 === 0) {
+    // https://datatracker.ietf.org/doc/html/rfc2324#section-2.3.2
+    res.status(418).json({status: "I'm a teapot"})
+    return
+  }
+
+  // Return early if project is a skipped project.
+  const projectId = Math.floor(tokenId/ 1e6)
+  if (skippedProjects.has(projectId)) {
     // https://datatracker.ietf.org/doc/html/rfc2324#section-2.3.2
     res.status(418).json({status: "I'm a teapot"})
     return
