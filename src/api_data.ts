@@ -42,21 +42,15 @@ export interface Response {
 }
 
 const getTokenResp = async (tokenId: string): Promise<Response> => {
-  let contracts = process.env.ALLOWED_CONTRACTS.replace('[', '')
-    .replace(']', '')
-    .replace(' ', '')
-    .split(',');
-  for (let i = 0; i < contracts.length; i++) {
-    let contract = contracts[i];
-    try {
-      return await axios.get(
-        `https://token.artblocks.io/${contract}/${tokenId}`
-      );
-    } catch (e) {
-      console.warn(
-        `[WARN] No Data for token: ${tokenId} in contract: ${contract}`
-      );
-    }
+  try {
+    // Use {contract}/{tokenId} if PBAB project, / {tokenId} if AB project
+    return process.env.IS_PBAB === 'true'
+      ? await axios.get(
+          `https://token.artblocks.io/${process.env.PBAB_CONTRACT}/${tokenId}`
+        )
+      : await axios.get(`https://token.artblocks.io/${tokenId}`);
+  } catch (e) {
+    console.warn(`[WARN] No Data for token: ${tokenId} `);
   }
 };
 

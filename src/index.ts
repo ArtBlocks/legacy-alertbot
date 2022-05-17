@@ -21,10 +21,18 @@ const allowed = (webhookHeader: string) => {
   }
 };
 
-const allowedContracts = process.env.ALLOWED_CONTRACTS.toLowerCase();
+const AB_CONTRACTS =
+  process.env.NODE_ENV === 'test'
+    ? ['0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25']
+    : [
+        '0x059edd72cd353df5106d2b9cc5ab83a52287ac3a',
+        '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270',
+      ];
 
 const contractAllowed = (contract: string) => {
-  return allowedContracts.includes(contract.toLowerCase());
+  return process.env.IS_PBAB === 'true'
+    ? process.env.PBAB_CONTRACT.toLowerCase().includes(contract.toLowerCase())
+    : AB_CONTRACTS.includes(contract.toLowerCase());
 };
 
 app.post('/', (req: any, res: any) => {
