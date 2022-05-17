@@ -46,7 +46,8 @@ const getTokenResp = async (tokenId: string): Promise<Response> => {
     .replace(']', '')
     .replace(' ', '')
     .split(',');
-  for (let contract in contracts) {
+  for (let i = 0; i < contracts.length; i++) {
+    let contract = contracts[i];
     try {
       return await axios.get(
         `https://token.artblocks.io/${contract}/${tokenId}`
@@ -63,8 +64,14 @@ const getImageResp = async (
   tokenId: string,
   abResp: ArtBlocksResponse
 ): Promise<Response> => {
-  const thumbnailLocation = config?.thumbnailLocation || abResp.image;
-  const imageUrl = `${thumbnailLocation}/${tokenId}.png`;
+  const thumbnailLocation = config?.thumbnailLocation || '';
+
+  // If no thumbnailLocation provided, use image field from token endpoint resp
+  const imageUrl =
+    thumbnailLocation.length > 0
+      ? `${thumbnailLocation}/${tokenId}.png`
+      : abResp.image;
+
   try {
     return await axios.get(imageUrl, {
       responseType: 'arraybuffer',
