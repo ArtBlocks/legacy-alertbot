@@ -9,10 +9,7 @@ Fork this repo into your organization.
 
 # Adjust Code.
 
-1. Update this endpoint https://github.com/ArtBlocks/alertbot/blob/main/src/api_data.ts#L46 - use {contractAddress/tokenId}
-2. Provide location for smaller images. If none available, use your defualt image bucket. https://github.com/ArtBlocks/alertbot/blob/main/src/config.ts#L20.
-   - NOTE: If default image bucket is used, you may run up against twitter image size limits.
-3. Set rest of environment https://github.com/ArtBlocks/alertbot/blob/main/.env.example. When ready, we can provide the webhook secret.
+1. Set environment variables https://github.com/ArtBlocks/alertbot/blob/main/.env.example. When ready, we can provide the webhook secret.
 
 # Deploy.
 
