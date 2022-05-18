@@ -26,7 +26,7 @@ const AB_CONTRACTS =
     ? ['0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25']
     : [
         '0x059edd72cd353df5106d2b9cc5ab83a52287ac3a',
-        '0xa7d8d9ef8D8Ce8992Df33D8b8CF4Aebabd5bD270',
+        '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270',
       ];
 
 const contractAllowed = (contract: string) => {
