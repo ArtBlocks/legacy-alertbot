@@ -108,7 +108,6 @@ export const getArtblockInfo = async (
   contract: string
 ): Promise<ArtBlockInfo> => {
   const apiResponse = await getTokenResp(tokenId, contract);
-  console.log(apiResponse);
   const abResp = apiResponse.data as ArtBlocksResponse;
   const imageResp = await getImageResp(tokenId, abResp);
   if (imageResp && imageResp.data) {

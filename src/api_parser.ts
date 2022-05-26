@@ -14,9 +14,9 @@ const client = createClient({
   }),
 });
 
-const _getPBABContracts = gql`
-  query getPBABContracts($ids: [ID]!) {
-    contracts(where: { id_not_in: $ids }) {
+const _getContracts = gql`
+  query getContracts($ids_to_exclude: [ID]!) {
+    contracts(where: { id_not_in: $ids_to_exclude }) {
       id
     }
   }
@@ -28,8 +28,8 @@ const _getPBABContracts = gql`
 export async function getPBABContracts() {
   try {
     const result = await client
-      .query(_getPBABContracts, {
-        ids: Object.values(AB_CONTRACTS),
+      .query(_getContracts, {
+        ids_to_exclude: Object.values(AB_CONTRACTS),
       })
       .toPromise();
     return result.data.contracts.map(({ id }: { id: string }) => id);
