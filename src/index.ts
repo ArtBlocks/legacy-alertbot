@@ -28,8 +28,6 @@ const contractAllowed = async (contract: string) => {
   );
   const isABContract = isArtblocksContract(contract);
   const isPBAB = await isPBABContract(contract);
-  console.log('IS_PBAB', process.env.IS_PBAB);
-  console.log(isMyPBABContract, isABContract, isPBAB);
   return process.env.IS_PBAB === 'true'
     ? isMyPBABContract
     : isPBAB || isABContract;
