@@ -1,17 +1,19 @@
-import { config } from "./config";
-import { TweetV1, TwitterApi } from "twitter-api-v2";
-import { ArtBlockInfo } from "./api_data";
+import { config } from './config';
+import { TweetV1, TwitterApi } from 'twitter-api-v2';
+import { ArtBlockInfo } from './api_data';
+import { isArtblocksContract } from './utils';
 
 const TWITTER_TIMEOUT_MS = 14 * 1000;
 
-export const twitterClientV2 = (process.env.NODE_ENV == "production") 
-  ? new TwitterApi({
-    appKey: config.twitterApiKey,
-    appSecret: config.twitterApiSecret,
-    accessToken: config.twitterOauthToken,
-    accessSecret: config.twitterOauthSecret,
-  })
-  : new TwitterApi();
+export const twitterClientV2 =
+  process.env.NODE_ENV == 'production'
+    ? new TwitterApi({
+        appKey: config.twitterApiKey,
+        appSecret: config.twitterApiSecret,
+        accessToken: config.twitterOauthToken,
+        accessSecret: config.twitterOauthSecret,
+      })
+    : new TwitterApi();
 
 export interface Response {
   data: any;
@@ -26,8 +28,8 @@ function timeout(timeoutMs: number, failureMessage: string): Promise<never> {
 const uploadTwitterMediaWithTimeout = async (based: Buffer) => {
   // use race function to timeout because twitter library doesn't timeout
   return Promise.race([
-    timeout(TWITTER_TIMEOUT_MS, "Twitter post timed out"),
-    twitterClientV2.v1.uploadMedia(based, { type: "png" }),
+    timeout(TWITTER_TIMEOUT_MS, 'Twitter post timed out'),
+    twitterClientV2.v1.uploadMedia(based, { type: 'png' }),
   ]);
 };
 
@@ -46,18 +48,18 @@ export const uploadTwitterImage = async (
 const tweetArtblock = async (artBlock: ArtBlockInfo) => {
   const imageUrl = artBlock.image;
   if (!artBlock.image) {
-    console.error("No artblock image defined", JSON.stringify(artBlock));
+    console.error('No artblock image defined', JSON.stringify(artBlock));
     return;
   }
   const mediaId = await uploadTwitterImage(artBlock.imgBinary);
-  console.log(mediaId)
+  console.log(mediaId);
   if (!mediaId) {
-    console.error("no media id returned, not tweeting");
+    console.error('no media id returned, not tweeting');
     return;
   }
   console.log(`Uploaded image ${imageUrl} complete. Tweeting...`);
   const tweetText = `${artBlock.name} minted${
-    artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ""
+    artBlock.mintedBy ? ` by ${artBlock.mintedBy}` : ''
   }. \n\n https://artblocks.io/token/${artBlock.tokenID}`;
   console.log(`Tweeting ${tweetText}`);
 
@@ -71,9 +73,14 @@ const tweetArtblock = async (artBlock: ArtBlockInfo) => {
   };
 };
 
-export const sendToTwitter = async (
-  artBlock: ArtBlockInfo,
-) => {
+export const sendToTwitter = async (artBlock: ArtBlockInfo) => {
+  if (
+    !(process.env.IS_PBAB === 'true') &&
+    !isArtblocksContract(artBlock.contract)
+  ) {
+    // Do not tweet from AB mint account if PBAB mint event
+    return;
+  }
   let tweetResp:
     | {
         tweetRes: TweetV1;
@@ -82,9 +89,9 @@ export const sendToTwitter = async (
     | undefined = undefined;
   try {
     tweetResp = await tweetArtblock(artBlock);
-    console.log("Tweet", tweetResp.tweetUrl);
+    console.log('Tweet', tweetResp.tweetUrl);
     return tweetResp;
   } catch (e) {
-    console.error("[ERROR]: ", e);
+    console.error('[ERROR]: ', e);
   }
 };

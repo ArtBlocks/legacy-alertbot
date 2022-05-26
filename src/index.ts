@@ -1,6 +1,7 @@
 import { schedule } from 'node-cron';
 import { mintQueue, queueClean } from './mint_queue';
 import { config } from './config';
+import { isArtblocksContract, isPBABContract } from './utils';
 
 require('dotenv').config();
 const express = require('express');
@@ -21,21 +22,18 @@ const allowed = (webhookHeader: string) => {
   }
 };
 
-const AB_CONTRACTS =
-  process.env.NODE_ENV === 'test'
-    ? ['0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25']
-    : [
-        '0x059edd72cd353df5106d2b9cc5ab83a52287ac3a',
-        '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270',
-      ];
-
-const contractAllowed = (contract: string) => {
+const contractAllowed = async (contract: string) => {
+  const isMyPBABContract = process.env.PBAB_CONTRACT.toLowerCase().includes(
+    contract.toLowerCase()
+  );
+  const isABContract = isArtblocksContract(contract);
+  const isPBAB = await isPBABContract(contract);
   return process.env.IS_PBAB === 'true'
-    ? process.env.PBAB_CONTRACT.toLowerCase().includes(contract.toLowerCase())
-    : AB_CONTRACTS.includes(contract.toLowerCase());
+    ? isMyPBABContract
+    : isPBAB || isABContract;
 };
 
-app.post('/', (req: any, res: any) => {
+app.post('/', async (req: any, res: any) => {
   // Return early if webhook request is unauthorized.
   if (!allowed(req.get('webhook_secret'))) {
     // https://httpwg.org/specs/rfc7235.html#status.401
@@ -55,7 +53,7 @@ app.post('/', (req: any, res: any) => {
   }
 
   // Return early if contract is not a known/allowed contract.
-  if (!contractAllowed(newData?.contract_address)) {
+  if (!(await contractAllowed(newData?.contract_address))) {
     // https://httpwg.org/specs/rfc7231.html#status.501
     res.status(501).json({ status: 'not implemented' });
     return;
@@ -78,7 +76,8 @@ app.post('/', (req: any, res: any) => {
   }
 
   const ownerAddress = newData?.owner_address;
-  mintQueue.add({ tokenId, ownerAddress });
+  const contract = newData?.contract_address;
+  mintQueue.add({ tokenId, ownerAddress, contract });
   // https://datatracker.ietf.org/doc/html/rfc7231#section-6.3.3
   res.status(202).json({ status: 'accepted' });
 });

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { config } from './config';
+import { isArtblocksContract } from './utils';
 
 export interface ArtBlocksResponse {
   platform: string;
@@ -35,20 +36,26 @@ export interface Trait {
 export interface ArtBlockInfo extends ArtBlocksResponse {
   mintedBy?: string;
   imgBinary?: Buffer;
+  contract?: string;
 }
 
 export interface Response {
   data: any;
 }
 
-const getTokenResp = async (tokenId: string): Promise<Response> => {
+const getTokenResp = async (
+  tokenId: string,
+  contract: string
+): Promise<Response> => {
   try {
-    // Use {contract}/{tokenId} if PBAB project, / {tokenId} if AB project
-    return process.env.IS_PBAB === 'true'
-      ? await axios.get(
-          `https://token.artblocks.io/${process.env.PBAB_CONTRACT}/${tokenId}`
-        )
-      : await axios.get(`https://token.artblocks.io/${tokenId}`);
+    // Use /{tokenId} if AB project, /{contract}/{tokenId} if PBAB project
+    let tokenEndpoint;
+    if (isArtblocksContract(contract)) {
+      tokenEndpoint = `https://token.artblocks.io/${tokenId}`;
+    } else {
+      tokenEndpoint = `https://token.artblocks.io/${contract}/${tokenId}`;
+    }
+    return await axios.get(tokenEndpoint);
   } catch (e) {
     console.warn(`[WARN] No Data for token: ${tokenId} `);
   }
@@ -97,9 +104,10 @@ export const getOpenseaInfo = async (account: string): Promise<string> => {
 };
 
 export const getArtblockInfo = async (
-  tokenId: string
+  tokenId: string,
+  contract: string
 ): Promise<ArtBlockInfo> => {
-  const apiResponse = await getTokenResp(tokenId);
+  const apiResponse = await getTokenResp(tokenId, contract);
   const abResp = apiResponse.data as ArtBlocksResponse;
   const imageResp = await getImageResp(tokenId, abResp);
   if (imageResp && imageResp.data) {

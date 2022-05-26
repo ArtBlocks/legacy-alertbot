@@ -32,7 +32,8 @@ describe('ArtBlocks api_data', () => {
     afterEach(nock.cleanAll);
     it('gets additional meta needed for alert', async () => {
       const { name, image, external_url, imgBinary } = await getArtblockInfo(
-        '1'
+        '1',
+        '0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25'
       );
       assert.equal(name, 'Recursion #1');
       assert.equal(image, 'https://media.artblocks.io/1.png');
@@ -59,13 +60,13 @@ describe('ArtBlocks api_data', () => {
 describe('PBAB api_data', () => {
   before(() => {
     process.env.IS_PBAB = 'true';
-    process.env.PBAB_CONTRACT = '0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25';
+    process.env.PBAB_CONTRACT = '0x0000e93fc0b149ec59ad595e2e187a4e1d7fdc25';
   });
   describe('#getArtblockInfo', () => {
     before(() => {
       if (!nock.isActive()) nock.activate();
       const tokenScope = nock('https://token.artblocks.io')
-        .get('/0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25/1')
+        .get('/0x0000e93fc0b149ec59ad595e2e187a4e1d7fdc25/1')
         .reply(200, {
           name: 'Recursion #1',
           image: 'https://media.artblocks.io/1.png',
@@ -82,7 +83,8 @@ describe('PBAB api_data', () => {
     afterEach(nock.cleanAll);
     it('gets additional meta needed for alert', async () => {
       const { name, image, external_url, imgBinary } = await getArtblockInfo(
-        '1'
+        '1',
+        '0x0000e93fc0b149ec59ad595e2e187a4e1d7fdc25'
       );
       assert.equal(name, 'Recursion #1');
       assert.equal(image, 'https://media.artblocks.io/1.png');
