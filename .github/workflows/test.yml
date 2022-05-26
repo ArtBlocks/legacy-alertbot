@@ -7,6 +7,7 @@ name: Tests
       - reopened
 env:
   PBAB_CONTRACT: '0x87c6e93fc0b149ec59ad595e2e187a4e1d7fdc25'
+  NODE_ENV: 'test'
 
 jobs:
   test:
