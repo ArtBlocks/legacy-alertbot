@@ -52,7 +52,7 @@ const getTokenResp = async (
     let tokenEndpoint;
     if (isArtblocksContract(contract)) {
       tokenEndpoint = `https://token.artblocks.io/${tokenId}`;
-    } else if (isArtblocksStagingContract) {
+    } else if (isArtblocksStagingContract(contract)) {
       tokenEndpoint = `https://token.staging.artblocks.io/${tokenId}`;
     } else {
       tokenEndpoint = `https://token.artblocks.io/${contract}/${tokenId}`;

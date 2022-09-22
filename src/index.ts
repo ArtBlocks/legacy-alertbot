@@ -1,7 +1,7 @@
 import { schedule } from 'node-cron';
 import { mintQueue, queueClean } from './mint_queue';
 import { config } from './config';
-import { isArtblocksContract, isPBABContract } from './utils';
+import { isArtblocksContract, isArtblocksStagingContract, isPBABContract } from './utils';
 
 require('dotenv').config();
 const express = require('express');
@@ -27,10 +27,11 @@ const contractAllowed = async (contract: string) => {
     contract.toLowerCase()
   );
   const isABContract = isArtblocksContract(contract);
+  const isABStagingContract = isArtblocksStagingContract(contract);
   const isPBAB = await isPBABContract(contract);
   return process.env.IS_PBAB === 'true'
     ? isMyPBABContract
-    : isPBAB || isABContract;
+    : isPBAB || isABContract || isABStagingContract;
 };
 
 app.post('/', async (req: any, res: any) => {
