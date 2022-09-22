@@ -39,6 +39,11 @@ export const config = {
     'discord webhook url',
     false
   ),
+  discordStagingMintsWebhookUrl: stringFromENVorThrow(
+    process.env.DISCORD_STAGING_MINTS_WEBHOOK_URL,
+    'discord webhook url for AB staging mints',
+    false
+  ),
   pbabDiscordWebhookUrl: stringFromENVorThrow(
     process.env.PBAB_DISCORD_WEBHOOK_URL,
     'discord webhook url for AB PBAB channel',

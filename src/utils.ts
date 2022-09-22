@@ -8,8 +8,14 @@ export const AB_CONTRACTS =
         '0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270',
       ];
 
+export const AB_STAGING_CONTRACTS = ['0xda62f67be7194775a75be91cbf9feedcc5776d4b'];
+
 export function isArtblocksContract(contract: string): boolean {
   return AB_CONTRACTS.includes(contract.toLowerCase());
+}
+
+export function isArtblocksStagingContract(contract: string): boolean {
+  return AB_STAGING_CONTRACTS.includes(contract.toLowerCase());
 }
 
 export async function isPBABContract(contract: string): Promise<boolean> {

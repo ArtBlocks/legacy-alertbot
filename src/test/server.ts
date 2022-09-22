@@ -4,6 +4,8 @@ import {
   webhookDataSkippedProject,
   webhookDataUnknownContract,
   webhookDataChangeInImage,
+  webhookDataStagingMint,
+  webhookDataStagingMint0,
 } from './mocks/webhook';
 
 //During the test the env variable is set to test
@@ -124,6 +126,32 @@ describe('PBAB / receives hasura webhook', () => {
       .send(webhookDataChangeInImage)
       .end((err: any, res: any) => {
         res.should.have.status(304);
+        done();
+      });
+  });
+});
+
+describe('ArtBlocks Staging / receives hasura webhook', () => {
+  before(() => {
+    process.env.IS_PBAB = 'false';
+  });
+  it('receives webhook with new image_id and returns 202', (done) => {
+    chai
+      .request(app)
+      .post('/')
+      .send(webhookDataStagingMint)
+      .end((err: any, res: any) => {
+        res.should.have.status(202);
+        done();
+      });
+  });
+  it('receives webhook with mint 0 and returns 418', (done) => {
+    chai
+      .request(app)
+      .post('/')
+      .send(webhookDataStagingMint0)
+      .end((err: any, res: any) => {
+        res.should.have.status(418);
         done();
       });
   });
