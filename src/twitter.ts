@@ -78,7 +78,7 @@ export const sendToTwitter = async (artBlock: ArtBlockInfo) => {
     !(process.env.IS_PBAB === 'true') &&
     !isArtblocksContract(artBlock.contract)
   ) {
-    // Do not tweet from AB mint account if PBAB mint event
+    // Do not tweet from AB mint account if PBAB or staging mint event
     return;
   }
   let tweetResp:

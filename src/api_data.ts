@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { config } from './config';
-import { isArtblocksContract } from './utils';
+import { isArtblocksContract, isArtblocksStagingContract } from './utils';
 
 export interface ArtBlocksResponse {
   platform: string;
@@ -52,6 +52,8 @@ const getTokenResp = async (
     let tokenEndpoint;
     if (isArtblocksContract(contract)) {
       tokenEndpoint = `https://token.artblocks.io/${tokenId}`;
+    } else if (isArtblocksStagingContract) {
+      tokenEndpoint = `https://token.staging.artblocks.io/${tokenId}`;
     } else {
       tokenEndpoint = `https://token.artblocks.io/${contract}/${tokenId}`;
     }

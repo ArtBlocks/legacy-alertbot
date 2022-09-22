@@ -1,7 +1,7 @@
 import { ArtBlockInfo } from './api_data';
 import axios from 'axios';
 import { config } from './config';
-import { isArtblocksContract } from './utils';
+import { isArtblocksContract, isArtblocksStagingContract } from './utils';
 
 const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
   const title = artBlock.name;
@@ -24,12 +24,14 @@ const discordAlertForArtBlock = async (artBlock: ArtBlockInfo) => {
   );
 
   let discordWebhook = config.discordWebhookUrl;
-  if (
+  if (isArtblocksStagingContract(artBlock.contract)) {
+    discordWebhook = config.discordStagingMintsWebhookUrl;
+  } else if (
     !(process.env.IS_PBAB === 'true') &&
     !isArtblocksContract(artBlock.contract)
   ) {
     discordWebhook = config.pbabDiscordWebhookUrl;
-  }
+  } 
   return axios.post(discordWebhook, payload);
 };
 
