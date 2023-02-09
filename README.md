@@ -1,5 +1,7 @@
 # Art Blocks alertbot
 
+### **NOTE: This repo has been deprecated in favor of [artbot](https://github.com/ArtBlocks/artbot), which now handles all mint posting responsibilities**
+
 ## Overview
 
 A twitter bot that:
